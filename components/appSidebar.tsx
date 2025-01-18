@@ -1,3 +1,4 @@
+"use client";
 import {
   Sidebar,
   SidebarContent,
@@ -17,34 +18,40 @@ import {
   MapPinHouse,
   Percent,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const AppSidebar = () => {
+  const pathName = usePathname();
   const items = [
     {
       title: "Tax",
-      url: "#",
+      url: "/",
       icon: HandCoins,
+      isActive: pathName === "/",
     },
     {
       title: "Goods and Services",
-      url: "#",
+      url: "/goods-and-services",
       icon: BaggageClaim,
+      isActive: pathName === "/goods-and-services",
     },
     {
       title: "Location",
-      url: "#",
+      url: "/location",
       icon: MapPinHouse,
-      isActive: true,
+      isActive: pathName === "/location",
     },
     {
       title: "Tax Bracket",
-      url: "#",
+      url: "/tax-bracket",
       icon: FileChartColumn,
+      isActive: pathName === "/tax-bracket",
     },
     {
       title: "Tax Breaks",
-      url: "#",
+      url: "/tax-break",
       icon: Percent,
+      isActive: pathName === "/tax-break",
     },
   ];
   return (
