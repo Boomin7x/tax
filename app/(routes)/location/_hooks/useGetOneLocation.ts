@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
 import { locationApi } from "../_utils/api";
 
-const useGetOneLocation = () => {
+const useGetOneLocation = (locationId: string) => {
   return useQuery({
     queryKey: ["one-location"],
-    queryFn: locationApi.getOne,
+    queryFn: () => locationApi.getOne(locationId),
   });
 };
 

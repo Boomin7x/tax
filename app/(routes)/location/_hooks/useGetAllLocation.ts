@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { locationApi } from "../_utils/api";
+import { IFilter } from "../../types";
 
-const useGetAllLocation = () => {
+const useGetAllLocation = (filter: IFilter) => {
   return useQuery({
-    queryKey: ["all-location"],
-    queryFn: locationApi.getAll,
+    queryKey: ["all-location", filter],
+    queryFn: () => locationApi.getAll(filter),
   });
 };
 
