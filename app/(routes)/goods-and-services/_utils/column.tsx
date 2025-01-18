@@ -1,0 +1,1 @@
+const productColumn = (): ColumnDef<unknown> => [];
