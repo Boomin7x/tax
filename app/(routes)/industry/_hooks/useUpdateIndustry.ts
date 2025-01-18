@@ -1,11 +1,13 @@
 import { industryApi } from "../_utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { IIndustryPayload } from "../_utils/validation";
 
-const useUpdateIndustry = () => {
+const useUpdateIndustry = (industryid: string, userId: string) => {
   const queryclient = useQueryClient();
   return useMutation({
     mutationKey: ["update-industry"],
-    mutationFn: industryApi.update,
+    mutationFn: (data: IIndustryPayload) =>
+      industryApi.update(industryid, userId, data),
     onSuccess: () =>
       queryclient.invalidateQueries({ queryKey: ["all-industry"] }),
   });

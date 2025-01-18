@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { industryApi } from "../_utils/api";
 
-const useGetOneIndustry = () => {
+const useGetOneIndustry = (industryId: string) => {
   return useQuery({
     queryKey: ["one-industry"],
-    queryFn: industryApi.getOne,
+    queryFn: () => industryApi.getOne(industryId),
   });
 };
 
