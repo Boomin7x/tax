@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
+import { productApi } from "../_utils/api";
+import { IFilter } from "../../types";
 
-const useGetAllProduct = () => {
+const useGetAllProduct = (filters: IFilter) => {
   return useQuery({
     queryKey: ["all-product"],
-    queryFn: productApi.getAll,
+    queryFn: () => productApi.getAll(filters),
   });
 };
 
