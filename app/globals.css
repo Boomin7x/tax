@@ -17,6 +17,9 @@ body {
   
 }
 *{
+  input{
+    height: 95px;
+  }
 }
 
 
@@ -116,6 +119,8 @@ body {
     h6 {
       font-family: OutfitBold;
     }
+
+    
   }
   body {
     @apply bg-background text-foreground;

@@ -1,17 +1,8 @@
-"use client";
-import { DataTable, payments } from "@/components/dataTable";
-import { useState } from "react";
-import { taxColumn } from "./tax/_utils/column";
+import React from "react";
+import TaxMain from "./tax/_components/taxMain";
 
 const TaxPage = () => {
-  const [first] = useState(payments);
-  return (
-    <div>
-      <div className="p-10">
-        <DataTable columns={taxColumn} data={first} />
-      </div>
-    </div>
-  );
+  return <TaxMain />;
 };
 
 export default TaxPage;
