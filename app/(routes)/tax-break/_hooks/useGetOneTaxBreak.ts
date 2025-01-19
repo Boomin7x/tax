@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { taxBreakApi } from "../_utils/api";
 
-const useGetOneTaxBreak = () => {
+const useGetOneTaxBreak = (taxBreaksId: string) => {
   return useQuery({
     queryKey: ["one-tax-break"],
-    queryFn: taxBreakApi.getOne,
+    queryFn: () => taxBreakApi.getOne(taxBreaksId),
   });
 };
 

@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import { taxBreakApi } from "../_utils/api";
+import { IFilter } from "../../types";
 
-const useGetAllTaxBreak = () => {
+const useGetAllTaxBreak = (filter: IFilter) => {
   return useQuery({
     queryKey: ["all-tax-break"],
-    queryFn: taxBreakApi.getAll,
+    queryFn: () => taxBreakApi.getAll(filter),
   });
 };
 
