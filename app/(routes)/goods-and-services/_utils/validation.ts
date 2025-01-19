@@ -3,7 +3,7 @@ import * as Yup from "yup";
 export const productSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
-  isTaxable: Yup.boolean(),
+  isTaxable: Yup.boolean().required(),
   industryId: Yup.string()
     .required("Industry ID is required")
     .matches(

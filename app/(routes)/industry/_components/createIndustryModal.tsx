@@ -86,7 +86,7 @@ const CreateIndustryModal: FC<ICreateIndustryModal> = ({ isOpen, onClose }) => {
                   options={[
                     { inputDisplay: "Tax bracket", value: "tax bracket" },
                   ]}
-                  placeholder={"e.g : ABC industry ltd specialise in ..."}
+                  placeholder={"e.g : select ..."}
                 />
               )}
             />

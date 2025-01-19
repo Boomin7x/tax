@@ -8,3 +8,9 @@ export type IFilter = {
   search?: string;
   searchBy?: string;
 };
+
+export interface IModal {
+  isOpen: boolean;
+  onClose: () => void;
+  data?: object;
+}
