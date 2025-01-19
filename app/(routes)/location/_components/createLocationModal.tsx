@@ -42,7 +42,7 @@ const CreateLocationModal: FC<ICreateLocationModal> = ({ isOpen, onClose }) => {
   };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="rounded-[0.3px]">
+      <DialogContent className="rounded-[0.3px] ">
         <DialogHeader>
           <DialogTitle>Create location</DialogTitle>
           <DialogDescription>
@@ -51,7 +51,7 @@ const CreateLocationModal: FC<ICreateLocationModal> = ({ isOpen, onClose }) => {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-5 py-5 pb-7">
+          <div className="flex flex-col gap-5 py-5 pb-7 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center gap-5">
               <TextInput
                 label="location name"
@@ -100,33 +100,37 @@ const CreateLocationModal: FC<ICreateLocationModal> = ({ isOpen, onClose }) => {
                 error={form.formState.errors?.country}
               />
             </div>
-            <TextInput
-              label="prefix"
-              isRequired
-              placeholder={"e.g : LOC"}
-              {...form.register("prefix")}
-              error={form.formState.errors?.prefix}
-            />
-            <Controller
-              name="isTaxable"
-              control={form.control}
-              render={({ field }) => (
-                <SelectInput
-                  isRequired
-                  label="is taxable"
-                  onBlur={field.onBlur}
-                  error={form.formState.errors?.isTaxable}
-                  onValueChange={(value) =>
-                    form.setValue("isTaxable", value === "true")
-                  }
-                  options={[
-                    { inputDisplay: "TRUE", value: "true" },
-                    { inputDisplay: "FALSE", value: "false" },
-                  ]}
-                  placeholder={"e.g : select ..."}
-                />
-              )}
-            />
+            <div className="flex items-center gap-5">
+              <TextInput
+                label="prefix"
+                isRequired
+                placeholder={"e.g : LOC"}
+                {...form.register("prefix")}
+                error={form.formState.errors?.prefix}
+              />
+
+              <Controller
+                name="isTaxable"
+                control={form.control}
+                render={({ field }) => (
+                  <SelectInput
+                    isRequired
+                    label="is taxable"
+                    onBlur={field.onBlur}
+                    error={form.formState.errors?.isTaxable}
+                    className="w-full"
+                    onValueChange={(value) =>
+                      form.setValue("isTaxable", value === "true")
+                    }
+                    options={[
+                      { inputDisplay: "TRUE", value: "true" },
+                      { inputDisplay: "FALSE", value: "false" },
+                    ]}
+                    placeholder={"e.g : select ..."}
+                  />
+                )}
+              />
+            </div>
 
             <Controller
               name="type"

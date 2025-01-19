@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import useStore from "@/app/store/useStore";
 
 const IndustryMain = () => {
+  const { handleTitle } = useStore();
   const [createModal, setCreateModal] = useState<{
     data?: object;
     isopen: boolean;
@@ -18,8 +19,6 @@ const IndustryMain = () => {
     isOpen: createModal?.isopen as boolean,
     onClose: () => setCreateModal(undefined),
   };
-
-  const { handleTitle } = useStore();
 
   useEffect(() => {
     handleTitle("Industry");

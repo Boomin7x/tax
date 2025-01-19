@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import CreateLocationModal, {
@@ -16,7 +17,11 @@ const LocationMain = () => {
   };
   return (
     <div className="flex flex-col">
-      <Button>+ create</Button>
+      <Button
+        onClick={() => setCreateModal((prev) => ({ ...prev, open: true }))}
+      >
+        + create
+      </Button>
 
       {createModal?.open ? <CreateLocationModal {...CreateModalProps} /> : null}
     </div>

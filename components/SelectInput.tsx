@@ -33,7 +33,7 @@ const SelectInput: FC<ISelectInput> = ({
   ...rest
 }) => {
   return (
-    <div>
+    <div className="w-full">
       {!!label && (
         <p className="capitalize font-semibold">
           {label}{" "}

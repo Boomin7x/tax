@@ -1,27 +1,28 @@
+"use client";
 import React from "react";
+
 import {
   Dialog,
-  DialogTitle,
-  DialogHeader,
-  DialogFooter,
   DialogContent,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
-import useMessage from "@/hooks/useMessage";
-import TextInput from "@/components/TextInput";
-import SelectInput from "@/components/SelectInput";
 import CustomButton from "@/components/CustomButton";
+import SelectInput from "@/components/SelectInput";
 import TextAreaInput from "@/components/TextAreaInput";
+import TextInput from "@/components/TextInput";
+import useMessage from "@/hooks/useMessage";
 import useCreateProduct from "../_hooks/useCreateProduct";
-import useGetAllIndustry from "../../industry/_hooks/useGetAllIndustry";
 
-import { v4 } from "uuid";
-import { isAxiosError } from "axios";
-import { IModal } from "../../types";
 import { Button } from "@/components/ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { isAxiosError } from "axios";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { v4 } from "uuid";
+import { IModal } from "../../types";
 import { IProductPayload, productSchema } from "../_utils/validation";
 
 export type ICreateProductModal = IModal;
@@ -29,16 +30,16 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
   isOpen,
   onClose,
 }) => {
-  const message = useMessage();
   const form = useForm<IProductPayload>({
     mode: "onChange",
     resolver: yupResolver(productSchema),
   });
 
-  const { data: industry } = useGetAllIndustry({ limit: 100, page: 1 });
+  const message = useMessage();
+  //   const { data: industry } = useGetAllIndustry({ limit: 100, page: 1 });
   const { mutate, isPending } = useCreateProduct(v4());
 
-  console.log({ industry });
+  //   console.log({ industry });
 
   const onSubmit: SubmitHandler<IProductPayload> = (inputs) => {
     console.log({ inputs });
@@ -102,9 +103,7 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
                   label="Industry"
                   onBlur={field.onBlur}
                   error={form.formState.errors?.industryId}
-                  onValueChange={(value) =>
-                    form.setValue("isTaxable", value === "true")
-                  }
+                  onValueChange={(value) => form.setValue("industryId", value)}
                   options={[]}
                   placeholder={"e.g : select ..."}
                 />
@@ -120,7 +119,10 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
                   onBlur={field.onBlur}
                   error={form.formState.errors?.type}
                   onValueChange={(value) =>
-                    form.setValue("isTaxable", value === "true")
+                    form.setValue(
+                      "type",
+                      value as "exemption" | "non-exemption"
+                    )
                   }
                   options={[]}
                   placeholder={"e.g : select ..."}

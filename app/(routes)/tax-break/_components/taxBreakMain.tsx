@@ -1,35 +1,38 @@
 "use client";
-import React, { useEffect, useState } from "react";
-
 import useStore from "@/app/store/useStore";
+import React, { useEffect, useState } from "react";
+import CreatetaxBreakModal, {
+  ICreatetaxBreakModal,
+} from "./createtaxBreakModal";
 import { Button } from "@/components/ui/button";
-import CreateProductModal, { ICreateProductModal } from "./createProductModal";
 
-const GodsAndServicesmain = () => {
+const TaxBreakMain = () => {
   const { handleTitle } = useStore();
   useEffect(() => {
-    handleTitle("goods and services");
+    handleTitle("Tax break");
   }, []);
 
   const [createModal, setCreateModal] = useState<{
-    open: boolean;
     data?: object;
+    open: boolean;
   }>();
 
-  const createModalProps: ICreateProductModal = {
+  const createtaxBreakModalProps: ICreatetaxBreakModal = {
     isOpen: createModal?.open as boolean,
     data: createModal?.data,
     onClose: () => setCreateModal(undefined),
   };
+
   return (
     <div className="flex flex-col">
       <Button onClick={() => setCreateModal({ data: undefined, open: true })}>
         + create
       </Button>
-
-      {createModal?.open ? <CreateProductModal {...createModalProps} /> : null}
+      {createModal?.open ? (
+        <CreatetaxBreakModal {...createtaxBreakModalProps} />
+      ) : null}
     </div>
   );
 };
 
-export default GodsAndServicesmain;
+export default TaxBreakMain;

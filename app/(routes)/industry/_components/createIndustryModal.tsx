@@ -80,9 +80,11 @@ const CreateIndustryModal: FC<ICreateIndustryModal> = ({ isOpen, onClose }) => {
                   onValueChange={(value) =>
                     form.setValue("type", value as "tax bracket")
                   }
-                  options={[
-                    { inputDisplay: "Tax bracket", value: "tax bracket" },
-                  ]}
+                  options={
+                    [
+                      // { inputDisplay: "Tax bracket", value: "tax bracket" },
+                    ]
+                  }
                   placeholder={"e.g : select ..."}
                 />
               )}
