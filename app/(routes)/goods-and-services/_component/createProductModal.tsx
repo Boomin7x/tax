@@ -7,19 +7,22 @@ import {
   DialogContent,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { IModal } from "../../types";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { IProductPayload, productSchema } from "../_utils/validation";
-import CustomButton from "@/components/CustomButton";
-import { Button } from "@/components/ui/button";
+
 import useMessage from "@/hooks/useMessage";
-import useCreateProduct from "../_hooks/useCreateProduct";
-import { v4 } from "uuid";
 import TextInput from "@/components/TextInput";
-import TextAreaInput from "@/components/TextAreaInput";
 import SelectInput from "@/components/SelectInput";
+import CustomButton from "@/components/CustomButton";
+import TextAreaInput from "@/components/TextAreaInput";
+import useCreateProduct from "../_hooks/useCreateProduct";
 import useGetAllIndustry from "../../industry/_hooks/useGetAllIndustry";
+
+import { v4 } from "uuid";
+import { isAxiosError } from "axios";
+import { IModal } from "../../types";
+import { Button } from "@/components/ui/button";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { IProductPayload, productSchema } from "../_utils/validation";
 
 export type ICreateProductModal = IModal;
 const CreateProductModal: React.FC<ICreateProductModal> = ({
@@ -32,30 +35,39 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
     resolver: yupResolver(productSchema),
   });
 
-  const { data: industry } = useGetAllIndustry({ limit: 30, page: 1 });
+  const { data: industry } = useGetAllIndustry({ limit: 100, page: 1 });
   const { mutate, isPending } = useCreateProduct(v4());
 
   console.log({ industry });
 
   const onSubmit: SubmitHandler<IProductPayload> = (inputs) => {
     console.log({ inputs });
+    mutate(inputs, {
+      onSuccess: () => {
+        onClose();
+        message({ message: "product created", status: "success" });
+      },
+      onError: (error) => {
+        if (isAxiosError(error))
+          message({ message: error?.response?.data?.message, status: "error" });
+      },
+    });
   };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px]">
         <DialogHeader>
-          <DialogTitle>Create industry</DialogTitle>
+          <DialogTitle>Create Goods/Services</DialogTitle>
           <DialogDescription>
-            The Industry represents sector of economic activity. Each industry
-            is assigned a unique code that plays a role in determining
-            applicable taxes when combined with other codes such as location and
-            exemptions.
+            Goods/Services catalogs the products or services offered by
+            businesses. Each entry is linked to a specific Industry for
+            classification purposes
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-5 py-5 pb-7">
             <TextInput
-              label="product name"
+              label="Goods/Services name"
               isRequired
               placeholder={"e.g : product a"}
               {...form.register("name")}

@@ -56,10 +56,7 @@ const CreateIndustryModal: FC<ICreateIndustryModal> = ({ isOpen, onClose }) => {
         <DialogHeader>
           <DialogTitle>Create industry</DialogTitle>
           <DialogDescription>
-            The Industry represents sector of economic activity. Each industry
-            is assigned a unique code that plays a role in determining
-            applicable taxes when combined with other codes such as location and
-            exemptions.
+            The Industry represents sector of economic activity.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)}>

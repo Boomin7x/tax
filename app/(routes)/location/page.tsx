@@ -1,7 +1,8 @@
 import React from "react";
+import LocationMain from "./_components/locationMain";
 
 const LocationPage = () => {
-  return <div>LocationPage</div>;
+  return <LocationMain />;
 };
 
 export default LocationPage;
