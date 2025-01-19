@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import { typeValidation } from "../../utils";
 
 export const taxtBracketSchema = Yup.object().shape({
   incomeMin: Yup.number()
@@ -9,8 +10,6 @@ export const taxtBracketSchema = Yup.object().shape({
     .required("Income max is required"),
 
   description: Yup.string().required("Description is required"),
-  type: Yup.string()
-    .oneOf(["tax", "industry", "product", "tax bracket", "exemption", "tax"])
-    .required("Type is required"),
+  type: typeValidation,
 });
 export type ItaxtBracketPayload = Yup.InferType<typeof taxtBracketSchema>;

@@ -1,25 +1,24 @@
 import {
   Dialog,
-  DialogTitle,
-  DialogHeader,
-  DialogFooter,
   DialogContent,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
-import useMessage from "@/hooks/useMessage";
-import TextInput from "@/components/TextInput";
-import SelectInput from "@/components/SelectInput";
 import CustomButton from "@/components/CustomButton";
 import TextAreaInput from "@/components/TextAreaInput";
+import TextInput from "@/components/TextInput";
+import useMessage from "@/hooks/useMessage";
 import useCreateIndustry from "../_hooks/useCreateIndustry";
 
-import { v4 } from "uuid";
-import { FC } from "react";
-import { isAxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { isAxiosError } from "axios";
+import { FC, useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { v4 } from "uuid";
 import { IIndustryPayload, industrySchema } from "../_utils/validation";
 
 export interface ICreateIndustryModal {
@@ -50,6 +49,10 @@ const CreateIndustryModal: FC<ICreateIndustryModal> = ({ isOpen, onClose }) => {
     });
   };
 
+  useEffect(() => {
+    form.setValue("type", "industry");
+  }, [isOpen]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px]">
@@ -68,27 +71,7 @@ const CreateIndustryModal: FC<ICreateIndustryModal> = ({ isOpen, onClose }) => {
               {...form.register("name")}
               error={form.formState.errors?.name}
             />
-            <Controller
-              name="type"
-              control={form.control}
-              render={({ field }) => (
-                <SelectInput
-                  isRequired
-                  label="type"
-                  onBlur={field.onBlur}
-                  error={form.formState.errors?.type}
-                  onValueChange={(value) =>
-                    form.setValue("type", value as "tax bracket")
-                  }
-                  options={
-                    [
-                      // { inputDisplay: "Tax bracket", value: "tax bracket" },
-                    ]
-                  }
-                  placeholder={"e.g : select ..."}
-                />
-              )}
-            />
+
             <TextAreaInput
               isRequired
               label="description"

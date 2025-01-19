@@ -13,7 +13,7 @@ import {
 import useMessage from "@/hooks/useMessage";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isAxiosError } from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { v4 } from "uuid";
 import { IModal } from "../../types";
@@ -47,6 +47,10 @@ const CreatetaxBreakModal: React.FC<ICreatetaxBreakModal> = ({
       },
     });
   };
+  useEffect(() => {
+    form.setValue("type", "exemption");
+  }, [open]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px] ">

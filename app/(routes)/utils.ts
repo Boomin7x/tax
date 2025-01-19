@@ -1,4 +1,5 @@
 import { IFilter } from "./types";
+import * as yup from "yup";
 
 export const paramsCheck = (filters: IFilter) => ({
   limit: filters?.limit,
@@ -16,3 +17,16 @@ export const paramsCheck = (filters: IFilter) => ({
     },
   }),
 });
+
+export const typeValidation = yup
+  .string()
+  .oneOf([
+    "tax",
+    "industry",
+    "product",
+    "location",
+    "tax bracket",
+    "exemption",
+    "tax",
+  ])
+  .required("Type is required");

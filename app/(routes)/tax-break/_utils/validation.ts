@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import { typeValidation } from "../../utils";
 
 export const taxBreakSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -7,7 +8,7 @@ export const taxBreakSchema = Yup.object().shape({
   applicableTo: Yup.string()
     .oneOf(["PER"])
     .required("Applicable to must be PER"),
-  type: Yup.string().oneOf(["industry"]).required("Type is required"),
+  type: typeValidation,
 });
 
 export type ITaxBreakPayload = Yup.InferType<typeof taxBreakSchema>;

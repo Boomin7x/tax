@@ -13,8 +13,10 @@ export const taxApi = {
     const result = await axios.get(`/taxation/details/${taxId}`);
     return result?.data;
   },
-  create: async (data: ITaxationPayload) => {
-    const result = await axios.post(`/taxation/create`, data);
+  create: async (userId: string, data: ITaxationPayload) => {
+    const result = await axios.post(`/taxation/create`, data, {
+      params: { userId },
+    });
     return result?.data;
   },
   update: async (taxId: string, userId: string, data: ITaxationPayload) => {

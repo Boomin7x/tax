@@ -5,7 +5,7 @@ export const taxationSchema = yup.object().shape({
   description: yup.string().required("Description is required"),
   rateType: yup
     .string()
-    .oneOf(["percentage", "fixed"])
+    .oneOf(["percentage", "flat"])
     .required("Rate type is required"),
   taxRate: yup.number().required("Tax rate is required"),
   flateRate: yup.number().required("Flat rate is required"),

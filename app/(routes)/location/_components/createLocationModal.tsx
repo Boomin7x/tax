@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -40,6 +40,11 @@ const CreateLocationModal: FC<ICreateLocationModal> = ({ isOpen, onClose }) => {
       },
     });
   };
+
+  useEffect(() => {
+    form.setValue("type", "location");
+  }, [isOpen]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px] ">

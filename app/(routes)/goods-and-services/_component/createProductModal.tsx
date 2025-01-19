@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
   Dialog,
@@ -39,8 +39,6 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
   //   const { data: industry } = useGetAllIndustry({ limit: 100, page: 1 });
   const { mutate, isPending } = useCreateProduct(v4());
 
-  //   console.log({ industry });
-
   const onSubmit: SubmitHandler<IProductPayload> = (inputs) => {
     console.log({ inputs });
     mutate(inputs, {
@@ -54,6 +52,10 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
       },
     });
   };
+  useEffect(() => {
+    form.setValue("type", "product");
+  }, [isOpen]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px]">
@@ -109,26 +111,7 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
                 />
               )}
             />
-            <Controller
-              name="type"
-              control={form.control}
-              render={({ field }) => (
-                <SelectInput
-                  isRequired
-                  label="Type"
-                  onBlur={field.onBlur}
-                  error={form.formState.errors?.type}
-                  onValueChange={(value) =>
-                    form.setValue(
-                      "type",
-                      value as "exemption" | "non-exemption"
-                    )
-                  }
-                  options={[]}
-                  placeholder={"e.g : select ..."}
-                />
-              )}
-            />
+
             <TextAreaInput
               isRequired
               label="description"

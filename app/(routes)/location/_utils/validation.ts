@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { typeValidation } from "../../utils";
 
 export const locationSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
@@ -10,7 +11,7 @@ export const locationSchema = yup.object().shape({
   description: yup.string().required("Description is required"),
   isTaxable: yup.boolean().required("Taxable status is required"),
   prefix: yup.string().required("Prefix is required"),
-  type: yup.string().oneOf(["tax", "non-tax"]).required("Type is required"),
+  type: typeValidation,
 });
 
 export type ILocationPayload = yup.InferType<typeof locationSchema>;
