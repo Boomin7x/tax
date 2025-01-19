@@ -1,7 +1,8 @@
 import React from "react";
+import IndustryMain from "./_components/IndustryMain";
 
 const IndustryPage = () => {
-  return <div>IndustryPage</div>;
+  return <IndustryMain />;
 };
 
 export default IndustryPage;

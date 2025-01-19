@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import {
   BaggageClaim,
+  Factory,
   FileChartColumn,
   HandCoins,
   MapPinHouse,
@@ -34,6 +35,12 @@ const AppSidebar = () => {
       url: "/goods-and-services",
       icon: BaggageClaim,
       isActive: pathName === "/goods-and-services",
+    },
+    {
+      title: "Industry",
+      url: "/industry",
+      icon: Factory,
+      isActive: pathName === "/industry",
     },
     {
       title: "Location",

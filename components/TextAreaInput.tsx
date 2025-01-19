@@ -1,16 +1,16 @@
 import { cn } from "@/lib/utils";
 import React, { FC, ReactNode } from "react";
-import { Input } from "./ui/input";
 import { FieldError } from "react-hook-form";
+import { Textarea } from "./ui/textarea";
 
-interface ITextInput extends React.ComponentProps<typeof Input> {
+interface ITextAreaInput extends React.ComponentProps<typeof Textarea> {
   isRequired?: boolean;
   label?: string;
   leftIcon?: ReactNode;
   error?: FieldError;
 }
 
-const TextInput: FC<ITextInput> = ({
+const TextAreaInput: FC<ITextAreaInput> = ({
   isRequired = false,
   className,
   leftIcon,
@@ -33,9 +33,13 @@ const TextInput: FC<ITextInput> = ({
             {leftIcon}
           </div>
         ) : null}
-        <Input
+        <Textarea
           {...rest}
-          className={cn(className, error && "outline-red-500 border-red-500")}
+          className={cn(
+            "min-h-[70px]",
+            className,
+            error && "outline-red-500 border-red-500"
+          )}
         />
       </div>
 
@@ -44,4 +48,4 @@ const TextInput: FC<ITextInput> = ({
   );
 };
 
-export default TextInput;
+export default TextAreaInput;
