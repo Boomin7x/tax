@@ -30,3 +30,13 @@ export const typeValidation = yup
     "tax",
   ])
   .required("Type is required");
+
+export const filterOut = (a: string) => {
+  return (
+    a !== "createdBy" &&
+    a !== "updatedBy" &&
+    a !== "deletedAt" &&
+    a !== "type" &&
+    a !== "uuid"
+  );
+};

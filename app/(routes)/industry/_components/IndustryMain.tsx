@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import useStore from "@/app/store/useStore";
 import { DataTable } from "@/components/dataTable";
 import { Button } from "@/components/ui/button";
-import { Imeta } from "../../types";
+import { Imeta, ISheet, ISheetState } from "../../types";
 import useGetAllIndustry from "../_hooks/useGetAllIndustry";
 import { industryColumn } from "../_utils/column";
 import { IIndustry } from "../_utils/types";
 import CreateIndustryModal, {
   ICreateIndustryModal,
 } from "./createIndustryModal";
+import IndustryDetailsSheet from "./industryDetailsSheet";
 
 const IndustryMain = () => {
   const { handleTitle } = useStore();
@@ -18,6 +19,8 @@ const IndustryMain = () => {
     data?: object;
     isopen: boolean;
   }>();
+
+  const [detailsModal, setDetailsModal] = useState<ISheetState<IIndustry>>();
 
   const { data } = useGetAllIndustry({
     page: 1,
@@ -28,10 +31,17 @@ const IndustryMain = () => {
   const industryPagination = data?.meta as Imeta;
 
   console.log({ data });
+
   const createIndustryModalProps: ICreateIndustryModal = {
     data: createModal?.data,
     isOpen: createModal?.isopen as boolean,
     onClose: () => setCreateModal(undefined),
+  };
+
+  const industryDetailsModalProps: ISheet<IIndustry> = {
+    data: detailsModal?.data,
+    isOpen: detailsModal?.isopen as boolean,
+    onClose: () => setDetailsModal(undefined),
   };
 
   useEffect(() => {
@@ -48,13 +58,16 @@ const IndustryMain = () => {
       <DataTable
         columns={industryColumn({
           onDelete: () => {},
-          onDetails: () => {},
+          onDetails: (data) => setDetailsModal({ isopen: true, data }),
           onEdit: () => {},
         })}
         data={industryData ?? []}
       />
       {createModal?.isopen ? (
         <CreateIndustryModal {...createIndustryModalProps} />
+      ) : null}
+      {detailsModal?.isopen ? (
+        <IndustryDetailsSheet {...industryDetailsModalProps} />
       ) : null}
     </div>
   );

@@ -15,6 +15,17 @@ export interface IModal {
   data?: object;
 }
 
+export interface ISheet<I> {
+  isOpen: boolean;
+  onClose: () => void;
+  data?: I;
+}
+
+export interface ISheetState<I> {
+  data?: I;
+  isopen: boolean;
+}
+
 export type Imeta = {
   itemsPerPage: number;
   totalItems: number;
