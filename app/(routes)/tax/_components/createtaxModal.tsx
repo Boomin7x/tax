@@ -1,5 +1,5 @@
-import React from "react";
-import { IModal } from "../../types";
+"use client";
+import React, { useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,15 +8,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+
+import { v4 as uuidv4 } from "uuid";
+import { IModal } from "../../types";
+import { Button } from "@/components/ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { ITaxationPayload, taxationSchema } from "../_utils/validation";
+
 import TextInput from "@/components/TextInput";
 import SelectInput from "@/components/SelectInput";
-import { Button } from "@/components/ui/button";
 import CustomButton from "@/components/CustomButton";
 import useCreateTaxation from "../_hooks/useCreateTaxation";
-import { v4 } from "uuid";
+import useMessage from "@/hooks/useMessage";
+import TextAreaInput from "@/components/TextAreaInput";
 
 export type ICreatetaxModal = IModal;
 const CreatetaxModal: React.FC<ICreatetaxModal> = ({ isOpen, onClose }) => {
@@ -25,13 +30,15 @@ const CreatetaxModal: React.FC<ICreatetaxModal> = ({ isOpen, onClose }) => {
     resolver: yupResolver(taxationSchema),
   });
 
-  const { mutate, isPending } = useCreateTaxation(v4());
+  const message = useMessage();
+  const userId = useMemo(() => uuidv4(), []);
+  const { mutate, isPending } = useCreateTaxation(userId);
   const onSubmit: SubmitHandler<ITaxationPayload> = (inputs) => {
     console.log({ inputs });
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={() => onClose()}>
       <DialogContent className="rounded-[0.3px] ">
         <DialogHeader>
           <DialogTitle>Create Tax Breaks</DialogTitle>
@@ -51,7 +58,7 @@ const CreatetaxModal: React.FC<ICreatetaxModal> = ({ isOpen, onClose }) => {
               {...form.register("name")}
               error={form.formState.errors?.name}
             />
-            <TextInput
+            <TextAreaInput
               label="description"
               isRequired
               placeholder={"description here ... "}

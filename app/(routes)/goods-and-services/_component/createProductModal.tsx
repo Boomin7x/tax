@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 
 import {
   Dialog,
@@ -36,8 +36,9 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
   });
 
   const message = useMessage();
+  const userId = useMemo(() => v4(), []);
   //   const { data: industry } = useGetAllIndustry({ limit: 100, page: 1 });
-  const { mutate, isPending } = useCreateProduct(v4());
+  const { mutate, isPending } = useCreateProduct(userId);
 
   const onSubmit: SubmitHandler<IProductPayload> = (inputs) => {
     console.log({ inputs });

@@ -1,6 +1,6 @@
 "use client";
 import { DataTable, payments } from "@/components/dataTable";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TextInput from "@/components/TextInput";
 import { Button } from "@/components/ui/button";
 import useStore from "@/app/store/useStore";
@@ -9,9 +9,6 @@ import CreatetaxModal, { ICreatetaxModal } from "./createtaxModal";
 
 const TaxMain = () => {
   const { handleTitle } = useStore();
-  useEffect(() => {
-    handleTitle("tax");
-  }, []);
 
   const [first] = useState(payments);
   const [createModal, setCreateModal] = useState<{
@@ -19,11 +16,24 @@ const TaxMain = () => {
     data?: object;
   }>();
 
-  const createtaxModalProps: ICreatetaxModal = {
-    isOpen: createModal?.open as boolean,
-    onClose: () => setCreateModal(undefined),
-    data: createModal?.data,
-  };
+  const createTaxModalProps: ICreatetaxModal = useMemo(
+    () => ({
+      data: createModal?.data,
+      isOpen: createModal?.open as boolean,
+      onClose: () => setCreateModal(undefined),
+    }),
+    [createModal]
+  );
+
+  useEffect(() => {
+    handleTitle("tax");
+  }, []);
+
+  // const createtaxModalProps: ICreatetaxModal = {
+  //   data: createModal?.data,
+  //   isOpen: createModal?.open as boolean,
+  //   onClose: () => setCreateModal({ open: false, data: undefined }),
+  // };
   return (
     <div>
       <div className="p-10 flex flex-col">
@@ -32,14 +42,14 @@ const TaxMain = () => {
             <TextInput placeholder="Search all taxes" />
           </div>
           <Button
-            onClick={() => setCreateModal({ data: undefined, open: true })}
+            onClick={() => setCreateModal({ open: true, data: undefined })}
           >
             + Create tax
           </Button>
         </div>
         <DataTable columns={taxColumn} data={first} />
-        {createModal?.open ? <CreatetaxModal {...createtaxModalProps} /> : null}
       </div>
+      {createModal?.open ? <CreatetaxModal {...createTaxModalProps} /> : null}
     </div>
   );
 };
