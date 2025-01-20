@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { FilePenLine, ScrollText, Trash2 } from "lucide-react";
 
-const productColumn = ({
+export const productColumn = ({
   onDelete = () => {},
   onDetails = () => {},
   onEdit = () => {},

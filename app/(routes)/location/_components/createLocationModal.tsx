@@ -21,6 +21,7 @@ import SelectInput from "@/components/SelectInput";
 import CustomButton from "@/components/CustomButton";
 import TextAreaInput from "@/components/TextAreaInput";
 import useCreateLocation from "../_hooks/useCreateLocation";
+import { isAxiosError } from "axios";
 
 export type ICreateLocationModal = IModal;
 const CreateLocationModal: FC<ICreateLocationModal> = ({ isOpen, onClose }) => {
@@ -37,6 +38,11 @@ const CreateLocationModal: FC<ICreateLocationModal> = ({ isOpen, onClose }) => {
     mutate(inputs, {
       onSuccess: () => {
         message({ status: "success", message: "Location created" });
+        onClose();
+      },
+      onError: (error) => {
+        if (isAxiosError(error))
+          message({ message: error?.response?.data?.message, status: "error" });
       },
     });
   };
