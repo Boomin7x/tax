@@ -10,6 +10,8 @@ import { DataTable } from "@/components/dataTable";
 import useGetAllTaxtBracket from "../_hooks/useGetAllTaxtBracket";
 import { ITaxBracket } from "../_utils/type";
 import { taxtBracketColumn } from "../_utils/column";
+import TaxBracketDetailsSheet from "./taxBracketDetailsSheet";
+import { ISheet, ISheetState } from "../../types";
 
 const TaxBracketMain = () => {
   const { handleTitle } = useStore();
@@ -24,11 +26,18 @@ const TaxBracketMain = () => {
     open: boolean;
     data?: object;
   }>();
+  const [detailsModal, setDetailsModal] = useState<ISheetState<ITaxBracket>>();
 
   const createModalProps: ICreateTaxBracketModal = {
     data: createModal?.data,
     isOpen: createModal?.open as boolean,
     onClose: () => setCreateModal(undefined),
+  };
+
+  const detailsModalProps: ISheet<ITaxBracket> = {
+    isOpen: detailsModal?.isopen as boolean,
+    data: detailsModal?.data,
+    onClose: () => setDetailsModal(undefined),
   };
 
   return (
@@ -39,13 +48,16 @@ const TaxBracketMain = () => {
       <DataTable
         columns={taxtBracketColumn({
           onDelete: () => {},
-          onDetails: () => {},
+          onDetails: (data) => setDetailsModal({ isopen: true, data }),
           onEdit: () => {},
         })}
         data={texBracketData ?? []}
       />
       {createModal?.open ? (
         <CreateTaxBracketModal {...createModalProps} />
+      ) : null}
+      {detailsModal?.isopen ? (
+        <TaxBracketDetailsSheet {...detailsModalProps} />
       ) : null}
     </div>
   );
