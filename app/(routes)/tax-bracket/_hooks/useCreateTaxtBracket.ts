@@ -5,7 +5,7 @@ import { ItaxtBracketPayload } from "../_utils/validation";
 const useCreateTaxBracket = (userId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ["create-tax-bracket"],
+    mutationKey: ["create-tax-bracket", userId],
     mutationFn: (data: ItaxtBracketPayload) =>
       taxBracketApi.create(userId, data),
     onSuccess: () =>

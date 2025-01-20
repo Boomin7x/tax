@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -29,10 +29,17 @@ const CreateTaxBracketModal: React.FC<ICreateTaxBracketModal> = ({
   const form = useForm<ItaxtBracketPayload>({
     mode: "onChange",
     resolver: yupResolver(taxtBracketSchema),
+    defaultValues: {
+      incomeMin: 0,
+      incomeMax: 0,
+      description: "",
+      type: "tax bracket",
+    },
   });
 
   const message = useMessage();
-  const { mutate, isPending } = useCreateTaxBracket(v4());
+  const userId = useMemo(() => v4(), []);
+  const { mutate, isPending } = useCreateTaxBracket(userId);
 
   const onSubmit: SubmitHandler<ItaxtBracketPayload> = (inputs) => {
     console.log(inputs);
@@ -51,8 +58,6 @@ const CreateTaxBracketModal: React.FC<ICreateTaxBracketModal> = ({
   useEffect(() => {
     form.setValue("type", "tax bracket");
   }, [isOpen]);
-
-  console.log({ value: form.watch() });
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

@@ -23,7 +23,7 @@ const LocationMain = () => {
 
   const { data } = useGetAllLocation({ page: 1, limit: 10 });
   const locationData = data?.data as ILocation[];
-  const liocationMeta = data?.meta as Imeta;
+  const locationMeta = data?.meta as Imeta;
   return (
     <div className="flex flex-col">
       <Button

@@ -6,12 +6,19 @@ import CreateTaxBracketModal, {
 } from "./createTaxBracketModal";
 
 import useStore from "@/app/store/useStore";
+import { DataTable } from "@/components/dataTable";
+import useGetAllTaxtBracket from "../_hooks/useGetAllTaxtBracket";
+import { ITaxBracket } from "../_utils/type";
+import { taxtBracketColumn } from "../_utils/column";
 
 const TaxBracketMain = () => {
   const { handleTitle } = useStore();
   useEffect(() => {
     handleTitle("Tax bracket");
   }, []);
+
+  const { data } = useGetAllTaxtBracket({ page: 1, limit: 10 });
+  const texBracketData = data?.data as ITaxBracket[];
 
   const [createModal, setCreateModal] = useState<{
     open: boolean;
@@ -29,6 +36,14 @@ const TaxBracketMain = () => {
       <Button onClick={() => setCreateModal({ data: undefined, open: true })}>
         + create
       </Button>
+      <DataTable
+        columns={taxtBracketColumn({
+          onDelete: () => {},
+          onDetails: () => {},
+          onEdit: () => {},
+        })}
+        data={texBracketData ?? []}
+      />
       {createModal?.open ? (
         <CreateTaxBracketModal {...createModalProps} />
       ) : null}

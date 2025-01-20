@@ -5,6 +5,7 @@ import CreatetaxBreakModal, {
   ICreatetaxBreakModal,
 } from "./createtaxBreakModal";
 import { Button } from "@/components/ui/button";
+import useGetAllTaxBreak from "../_hooks/useGetAllTaxBreak";
 
 const TaxBreakMain = () => {
   const { handleTitle } = useStore();
@@ -22,6 +23,9 @@ const TaxBreakMain = () => {
     data: createModal?.data,
     onClose: () => setCreateModal(undefined),
   };
+
+  const { data } = useGetAllTaxBreak({ page: 1, limit: 10 });
+  console.log({ data });
 
   return (
     <div className="flex flex-col">
