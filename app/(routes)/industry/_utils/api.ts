@@ -1,17 +1,20 @@
 // import axios from "@/config/axios.config";
-import axios from "axios";
-import { IFilter } from "../../types";
+import axios from "@/config/axios.config";
+import { IFilter, IResponse } from "../../types";
 import { paramsCheck } from "../../utils";
+import { IIndustry } from "./types";
 import { IIndustryPayload } from "./validation";
 
 export const industryApi = {
-  getAll: async (filter: IFilter) => {
+  getAll: async (
+    filter: IFilter
+  ): Promise<{ data: IIndustry[] } & IResponse> => {
     try {
       const params = paramsCheck(filter);
-      const result = await axios.post(`/industry/filter`, {}, { params });
+      const result = await axios.post(`/industry/filtersahdi`, {}, { params });
       return result?.data;
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      throw error;
     }
   },
   getOne: async (industryId: string) => {

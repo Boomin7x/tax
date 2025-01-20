@@ -14,3 +14,16 @@ export interface IModal {
   onClose: () => void;
   data?: object;
 }
+
+export type Imeta = {
+  itemsPerPage: number;
+  totalItems: number;
+  currentPage: number;
+  totalPages: number;
+  sortBy: [string, string][];
+};
+
+export type IResponse = {
+  links: { current: string };
+  meta: Imeta;
+};

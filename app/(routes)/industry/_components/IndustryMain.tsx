@@ -1,13 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
+import useStore from "@/app/store/useStore";
+import { DataTable, payments } from "@/components/dataTable";
+import { Button } from "@/components/ui/button";
+import { taxColumn } from "../../tax/_utils/column";
+import useGetAllIndustry from "../_hooks/useGetAllIndustry";
 import CreateIndustryModal, {
   ICreateIndustryModal,
 } from "./createIndustryModal";
-import { Button } from "@/components/ui/button";
-import useStore from "@/app/store/useStore";
-import { DataTable, payments } from "@/components/dataTable";
-import { taxColumn } from "../../tax/_utils/column";
+import { IIndustry } from "../_utils/types";
+import { Imeta } from "../../types";
 
 const IndustryMain = () => {
   const [first] = useState(payments);
@@ -17,6 +20,15 @@ const IndustryMain = () => {
     isopen: boolean;
   }>();
 
+  const { data } = useGetAllIndustry({
+    page: 1,
+    limit: 10,
+  });
+
+  const industryData = data?.data as IIndustry[];
+  const industryPagination = data?.meta as Imeta;
+
+  console.log({ data });
   const createIndustryModalProps: ICreateIndustryModal = {
     data: createModal?.data,
     isOpen: createModal?.isopen as boolean,
