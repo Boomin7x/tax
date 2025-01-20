@@ -6,8 +6,11 @@ import CreateIndustryModal, {
 } from "./createIndustryModal";
 import { Button } from "@/components/ui/button";
 import useStore from "@/app/store/useStore";
+import { DataTable, payments } from "@/components/dataTable";
+import { taxColumn } from "../../tax/_utils/column";
 
 const IndustryMain = () => {
+  const [first] = useState(payments);
   const { handleTitle } = useStore();
   const [createModal, setCreateModal] = useState<{
     data?: object;
@@ -31,6 +34,7 @@ const IndustryMain = () => {
       >
         + create
       </Button>
+      <DataTable columns={taxColumn} data={first} />
       {createModal?.isopen ? (
         <CreateIndustryModal {...createIndustryModalProps} />
       ) : null}

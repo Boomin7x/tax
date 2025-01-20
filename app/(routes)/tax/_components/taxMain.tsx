@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import useStore from "@/app/store/useStore";
 import { taxColumn } from "../_utils/column";
 import CreatetaxModal, { ICreatetaxModal } from "./createtaxModal";
+import { SearchIcon } from "lucide-react";
 
 const TaxMain = () => {
   const { handleTitle } = useStore();
@@ -39,7 +40,11 @@ const TaxMain = () => {
       <div className="p-10 flex flex-col">
         <div className="flex h-fit items-end justify-between">
           <div className="w-1/2">
-            <TextInput placeholder="Search all taxes" />
+            <TextInput
+              leftIcon={<SearchIcon className="w-4 h-4" />}
+              className="pl-11"
+              placeholder="Search all taxes"
+            />
           </div>
           <Button
             onClick={() => setCreateModal({ open: true, data: undefined })}

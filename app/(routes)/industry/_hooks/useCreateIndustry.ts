@@ -6,7 +6,10 @@ const useCreateIndustry = (userId: string) => {
   const queryclient = useQueryClient();
   return useMutation({
     mutationKey: ["create-industry"],
-    mutationFn: (data: IIndustryPayload) => industryApi.create(userId, data),
+    mutationFn: (data: IIndustryPayload) => {
+      console.log("Mutation function called with:", data);
+      return industryApi.create(userId, data);
+    },
     onSuccess: () =>
       queryclient.invalidateQueries({ queryKey: ["all-industry"] }),
   });

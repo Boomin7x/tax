@@ -16,7 +16,7 @@ import useCreateIndustry from "../_hooks/useCreateIndustry";
 import { Button } from "@/components/ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isAxiosError } from "axios";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useMemo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { v4 } from "uuid";
 import { IIndustryPayload, industrySchema } from "../_utils/validation";
@@ -32,8 +32,9 @@ const CreateIndustryModal: FC<ICreateIndustryModal> = ({ isOpen, onClose }) => {
     resolver: yupResolver(industrySchema),
   });
 
+  const userId = useMemo(() => v4(), []);
   const message = useMessage();
-  const { mutate, isPending } = useCreateIndustry(v4());
+  const { mutate, isPending } = useCreateIndustry(userId);
 
   const onSubmit: SubmitHandler<IIndustryPayload> = (inputs) => {
     console.log({ inputs });
