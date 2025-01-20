@@ -8,17 +8,12 @@ import { Imeta, ISheet, ISheetState } from "../../types";
 import useGetAllIndustry from "../_hooks/useGetAllIndustry";
 import { industryColumn } from "../_utils/column";
 import { IIndustry } from "../_utils/types";
-import CreateIndustryModal, {
-  ICreateIndustryModal,
-} from "./createIndustryModal";
+import CreateIndustryModal from "./createIndustryModal";
 import IndustryDetailsSheet from "./industryDetailsSheet";
 
 const IndustryMain = () => {
   const { handleTitle } = useStore();
-  const [createModal, setCreateModal] = useState<{
-    data?: object;
-    isopen: boolean;
-  }>();
+  const [createModal, setCreateModal] = useState<ISheetState<IIndustry>>();
 
   const [detailsModal, setDetailsModal] = useState<ISheetState<IIndustry>>();
 
@@ -32,7 +27,7 @@ const IndustryMain = () => {
 
   console.log({ data });
 
-  const createIndustryModalProps: ICreateIndustryModal = {
+  const createIndustryModalProps: ISheet<IIndustry> = {
     data: createModal?.data,
     isOpen: createModal?.isopen as boolean,
     onClose: () => setCreateModal(undefined),
@@ -59,7 +54,7 @@ const IndustryMain = () => {
         columns={industryColumn({
           onDelete: () => {},
           onDetails: (data) => setDetailsModal({ isopen: true, data }),
-          onEdit: () => {},
+          onEdit: (data) => setCreateModal({ isopen: true, data }),
         })}
         data={industryData ?? []}
       />

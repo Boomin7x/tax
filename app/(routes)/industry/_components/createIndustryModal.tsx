@@ -20,13 +20,16 @@ import { FC, useEffect, useMemo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { v4 } from "uuid";
 import { IIndustryPayload, industrySchema } from "../_utils/validation";
+import { ISheet } from "../../types";
+import { IIndustry } from "../_utils/types";
+import useUpdateIndustry from "../_hooks/useUpdateIndustry";
 
-export interface ICreateIndustryModal {
-  isOpen: boolean;
-  onClose: () => void;
-  data?: object;
-}
-const CreateIndustryModal: FC<ICreateIndustryModal> = ({ isOpen, onClose }) => {
+const CreateIndustryModal: FC<ISheet<IIndustry>> = ({
+  isOpen,
+  onClose,
+  data,
+}) => {
+  const newData = data as IIndustry;
   const form = useForm<IIndustryPayload>({
     mode: "onChange",
     resolver: yupResolver(industrySchema),
@@ -35,30 +38,59 @@ const CreateIndustryModal: FC<ICreateIndustryModal> = ({ isOpen, onClose }) => {
   const userId = useMemo(() => v4(), []);
   const message = useMessage();
   const { mutate, isPending } = useCreateIndustry(userId);
+  const { mutate: updateFn, isPending: isUpdating } = useUpdateIndustry(
+    newData?.uuid,
+    userId
+  );
 
   const onSubmit: SubmitHandler<IIndustryPayload> = (inputs) => {
     console.log({ inputs });
-    mutate(inputs, {
-      onSuccess: () => {
-        onClose();
-        message({ message: "industry created", status: "success" });
-      },
-      onError: (error) => {
-        if (isAxiosError(error))
-          message({ message: error?.response?.data?.message, status: "error" });
-      },
-    });
+    if (!!newData)
+      updateFn(inputs, {
+        onSuccess: () => {
+          onClose();
+          message({ message: "industry updated", status: "success" });
+        },
+        onError: (error) => {
+          if (isAxiosError(error))
+            message({
+              message: error?.response?.data?.message,
+              status: "error",
+            });
+        },
+      });
+    else
+      mutate(inputs, {
+        onSuccess: () => {
+          onClose();
+          message({ message: "industry created", status: "success" });
+        },
+        onError: (error) => {
+          if (isAxiosError(error))
+            message({
+              message: error?.response?.data?.message,
+              status: "error",
+            });
+        },
+      });
   };
 
   useEffect(() => {
     form.setValue("type", "industry");
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!!newData) {
+      form.setValue("description", newData?.description);
+      form.setValue("name", newData?.name);
+    }
+  }, [isOpen, newData]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px]">
         <DialogHeader>
-          <DialogTitle>Create industry</DialogTitle>
+          <DialogTitle>{!!newData ? "Update" : "Create"} industry</DialogTitle>
           <DialogDescription>
             The Industry represents sector of economic activity.
           </DialogDescription>
@@ -83,8 +115,8 @@ const CreateIndustryModal: FC<ICreateIndustryModal> = ({ isOpen, onClose }) => {
           </div>
           <DialogFooter>
             <Button variant="outline">Close</Button>
-            <CustomButton type="submit" isLoading={isPending}>
-              Create
+            <CustomButton type="submit" isLoading={isPending || isUpdating}>
+              {!!newData ? "Update" : "Create"}
             </CustomButton>
           </DialogFooter>
         </form>
