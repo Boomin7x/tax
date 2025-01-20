@@ -9,6 +9,8 @@ import useGetAllTaxBreak from "../_hooks/useGetAllTaxBreak";
 import { ITaxBreak } from "../_utils/type";
 import { taxBreakColumn } from "../_utils/column";
 import { DataTable } from "@/components/dataTable";
+import TaxBreakDetailsSheet from "./taxBreakDetailsSheet";
+import { ISheet, ISheetState } from "../../types";
 
 const TaxBreakMain = () => {
   const { handleTitle } = useStore();
@@ -20,11 +22,18 @@ const TaxBreakMain = () => {
     data?: object;
     open: boolean;
   }>();
+  const [detailsModal, setDetailsModal] = useState<ISheetState<ITaxBreak>>();
 
   const createtaxBreakModalProps: ICreatetaxBreakModal = {
     isOpen: createModal?.open as boolean,
     data: createModal?.data,
     onClose: () => setCreateModal(undefined),
+  };
+
+  const taxBreakDetailsProps: ISheet<ITaxBreak> = {
+    isOpen: detailsModal?.isopen as boolean,
+    data: detailsModal?.data,
+    onClose: () => setDetailsModal(undefined),
   };
 
   const { data } = useGetAllTaxBreak({ page: 1, limit: 10 });
@@ -39,13 +48,16 @@ const TaxBreakMain = () => {
       <DataTable
         columns={taxBreakColumn({
           onDelete: () => {},
-          onDetails: () => {},
+          onDetails: (data) => setDetailsModal({ isopen: true, data }),
           onEdit: () => {},
         })}
         data={taxBreakData ?? []}
       />
       {createModal?.open ? (
         <CreatetaxBreakModal {...createtaxBreakModalProps} />
+      ) : null}
+      {detailsModal?.isopen ? (
+        <TaxBreakDetailsSheet {...taxBreakDetailsProps} />
       ) : null}
     </div>
   );
