@@ -11,7 +11,7 @@ export const industryApi = {
   ): Promise<{ data: IIndustry[] } & IResponse> => {
     try {
       const params = paramsCheck(filter);
-      const result = await axios.post(`/industry/filtersahdi`, {}, { params });
+      const result = await axios.post(`/industry/filter`, {}, { params });
       return result?.data;
     } catch (error: unknown) {
       throw error;

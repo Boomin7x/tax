@@ -4,11 +4,11 @@ import TextInput from "@/components/TextInput";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogTitle,
+  DialogHeader,
+  DialogFooter,
   DialogContent,
   DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
 } from "@/components/ui/dialog";
 import useMessage from "@/hooks/useMessage";
 import { yupResolver } from "@hookform/resolvers/yup";

@@ -11,6 +11,7 @@ import CreateIndustryModal, {
 } from "./createIndustryModal";
 import { IIndustry } from "../_utils/types";
 import { Imeta } from "../../types";
+import { industryColumn } from "../_utils/column";
 
 const IndustryMain = () => {
   const [first] = useState(payments);
@@ -46,7 +47,14 @@ const IndustryMain = () => {
       >
         + create
       </Button>
-      <DataTable columns={taxColumn} data={first} />
+      <DataTable
+        columns={industryColumn({
+          onDelete: () => {},
+          onDetails: () => {},
+          onEdit: () => {},
+        })}
+        data={industryData ?? []}
+      />
       {createModal?.isopen ? (
         <CreateIndustryModal {...createIndustryModalProps} />
       ) : null}
