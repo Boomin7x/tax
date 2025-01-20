@@ -1,7 +1,8 @@
 import axios from "@/config/axios.config";
 import { ITaxBreakPayload } from "./validation";
-import { IFilter } from "../../types";
+import { IFilter, IResponse } from "../../types";
 import { paramsCheck } from "../../utils";
+import { ITaxBreak } from "./type";
 
 export const taxBreakApi = {
   create: async (userId: string, data: ITaxBreakPayload) => {
@@ -10,7 +11,9 @@ export const taxBreakApi = {
     });
     return result?.data;
   },
-  getAll: async (filter: IFilter) => {
+  getAll: async (
+    filter: IFilter
+  ): Promise<IResponse & { data: ITaxBreak[] }> => {
     const params = paramsCheck(filter);
     const result = await axios.post(`/tax-breaks/filter`, {}, { params });
     return result?.data;

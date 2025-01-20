@@ -101,25 +101,10 @@ const CreatetaxBreakModal: React.FC<ICreatetaxBreakModal> = ({
                   onValueChange={(value) =>
                     form.setValue("applicableTo", value as "PER")
                   }
-                  options={[{ inputDisplay: "PERSON", value: "PER" }]}
-                  placeholder={"e.g : select ..."}
-                />
-              )}
-            />
-
-            <Controller
-              name="type"
-              control={form.control}
-              render={({ field }) => (
-                <SelectInput
-                  isRequired
-                  label="Type"
-                  onBlur={field.onBlur}
-                  error={form.formState.errors?.type}
-                  onValueChange={(value) =>
-                    form.setValue("type", value as ITaxBreakPayload["type"])
-                  }
-                  options={[]}
+                  options={[
+                    { inputDisplay: "corporate", value: "corporate" },
+                    { inputDisplay: "personal", value: "personal" },
+                  ]}
                   placeholder={"e.g : select ..."}
                 />
               )}

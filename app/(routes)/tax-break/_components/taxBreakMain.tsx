@@ -6,6 +6,9 @@ import CreatetaxBreakModal, {
 } from "./createtaxBreakModal";
 import { Button } from "@/components/ui/button";
 import useGetAllTaxBreak from "../_hooks/useGetAllTaxBreak";
+import { ITaxBreak } from "../_utils/type";
+import { taxBreakColumn } from "../_utils/column";
+import { DataTable } from "@/components/dataTable";
 
 const TaxBreakMain = () => {
   const { handleTitle } = useStore();
@@ -25,6 +28,7 @@ const TaxBreakMain = () => {
   };
 
   const { data } = useGetAllTaxBreak({ page: 1, limit: 10 });
+  const taxBreakData = data?.data as ITaxBreak[];
   console.log({ data });
 
   return (
@@ -32,6 +36,14 @@ const TaxBreakMain = () => {
       <Button onClick={() => setCreateModal({ data: undefined, open: true })}>
         + create
       </Button>
+      <DataTable
+        columns={taxBreakColumn({
+          onDelete: () => {},
+          onDetails: () => {},
+          onEdit: () => {},
+        })}
+        data={taxBreakData ?? []}
+      />
       {createModal?.open ? (
         <CreatetaxBreakModal {...createtaxBreakModalProps} />
       ) : null}
