@@ -2,19 +2,17 @@
 import { useEffect, useState } from "react";
 
 import useStore from "@/app/store/useStore";
-import { DataTable, payments } from "@/components/dataTable";
+import { DataTable } from "@/components/dataTable";
 import { Button } from "@/components/ui/button";
-import { taxColumn } from "../../tax/_utils/column";
+import { Imeta } from "../../types";
 import useGetAllIndustry from "../_hooks/useGetAllIndustry";
+import { industryColumn } from "../_utils/column";
+import { IIndustry } from "../_utils/types";
 import CreateIndustryModal, {
   ICreateIndustryModal,
 } from "./createIndustryModal";
-import { IIndustry } from "../_utils/types";
-import { Imeta } from "../../types";
-import { industryColumn } from "../_utils/column";
 
 const IndustryMain = () => {
-  const [first] = useState(payments);
   const { handleTitle } = useStore();
   const [createModal, setCreateModal] = useState<{
     data?: object;

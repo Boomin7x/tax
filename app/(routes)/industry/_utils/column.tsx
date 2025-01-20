@@ -3,12 +3,8 @@ import { IIndustry } from "./types";
 import { Button } from "@/components/ui/button";
 import { FilePenLine, ScrollText, Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { IColumnProps } from "../../types";
 
-interface IColumnProps<T> {
-  onDetails: (data: T) => void;
-  onEdit: (data: T) => void;
-  onDelete: (data: T) => void;
-}
 export const industryColumn = ({
   onDelete = () => {},
   onDetails = () => {},

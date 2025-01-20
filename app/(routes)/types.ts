@@ -27,3 +27,9 @@ export type IResponse = {
   links: { current: string };
   meta: Imeta;
 };
+
+export interface IColumnProps<T> {
+  onDetails: (data: T) => void;
+  onEdit: (data: T) => void;
+  onDelete: (data: T) => void;
+}
