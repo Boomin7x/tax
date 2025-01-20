@@ -7,8 +7,9 @@ import CreateLocationModal, {
 import { DataTable } from "@/components/dataTable";
 import useGetAllLocation from "../_hooks/useGetAllLocation";
 import { ILocation } from "../_utils/types";
-import { Imeta } from "../../types";
+import { Imeta, ISheet, ISheetState } from "../../types";
 import { locationColumn } from "../_utils/column";
+import LocationDetailsSheet from "./locationDetailsSheet";
 
 const LocationMain = () => {
   const [createModal, setCreateModal] = useState<{
@@ -16,9 +17,16 @@ const LocationMain = () => {
     data?: object;
   }>();
 
+  const [detailsModal, setDetailsModal] = useState<ISheetState<ILocation>>();
+
   const CreateModalProps: ICreateLocationModal = {
     isOpen: createModal?.open as boolean,
     onClose: () => setCreateModal(undefined),
+  };
+  const detailsModalProps: ISheet<ILocation> = {
+    isOpen: detailsModal?.isopen as boolean,
+    onClose: () => setDetailsModal(undefined),
+    data: detailsModal?.data,
   };
 
   const { data } = useGetAllLocation({ page: 1, limit: 10 });
@@ -34,13 +42,16 @@ const LocationMain = () => {
       <DataTable
         columns={locationColumn({
           onDelete: () => {},
-          onDetails: () => {},
+          onDetails: (data) => setDetailsModal({ isopen: true, data }),
           onEdit: () => {},
         })}
         data={locationData ?? []}
       />
 
       {createModal?.open ? <CreateLocationModal {...CreateModalProps} /> : null}
+      {detailsModal?.isopen ? (
+        <LocationDetailsSheet {...detailsModalProps} />
+      ) : null}
     </div>
   );
 };
