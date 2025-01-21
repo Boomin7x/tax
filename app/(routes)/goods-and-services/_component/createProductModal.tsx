@@ -22,14 +22,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { isAxiosError } from "axios";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { v4 } from "uuid";
-import { IModal } from "../../types";
+import { ISheet } from "../../types";
+import { IProduct } from "../_utils/types";
 import { IProductPayload, productSchema } from "../_utils/validation";
+import useGetAllIndustry from "../../industry/_hooks/useGetAllIndustry";
+import { IIndustry } from "../../industry/_utils/types";
+import useUpdateProduct from "../_hooks/useUpdateProduct";
 
-export type ICreateProductModal = IModal;
-const CreateProductModal: React.FC<ICreateProductModal> = ({
+const CreateProductModal: React.FC<ISheet<IProduct>> = ({
   isOpen,
   onClose,
+  data,
 }) => {
+  const newData = data as IProduct;
   const form = useForm<IProductPayload>({
     mode: "onChange",
     resolver: yupResolver(productSchema),
@@ -37,31 +42,74 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
 
   const message = useMessage();
   const userId = useMemo(() => v4(), []);
-  //   const { data: industry } = useGetAllIndustry({ limit: 100, page: 1 });
+  const { data: industry } = useGetAllIndustry({ limit: 100, page: 1 });
   const { mutate, isPending } = useCreateProduct(userId);
+  const { mutate: updateFn, isPending: isUpdating } = useUpdateProduct(
+    newData?.uuid,
+    userId
+  );
 
   const onSubmit: SubmitHandler<IProductPayload> = (inputs) => {
     console.log({ inputs });
-    mutate(inputs, {
-      onSuccess: () => {
-        onClose();
-        message({ message: "product created", status: "success" });
-      },
-      onError: (error) => {
-        if (isAxiosError(error))
-          message({ message: error?.response?.data?.message, status: "error" });
-      },
-    });
+    if (!!newData)
+      updateFn(inputs, {
+        onSuccess: () => {
+          onClose();
+          message({ message: "product updated", status: "success" });
+        },
+        onError: (error) => {
+          if (isAxiosError(error))
+            message({
+              message: error?.response?.data?.message,
+              status: "error",
+            });
+        },
+      });
+    else
+      mutate(inputs, {
+        onSuccess: () => {
+          onClose();
+          message({ message: "product created", status: "success" });
+        },
+        onError: (error) => {
+          if (isAxiosError(error))
+            message({
+              message: error?.response?.data?.message,
+              status: "error",
+            });
+        },
+      });
   };
+
+  const industryData = industry?.data as IIndustry[];
+
+  const industryOptions = !!industryData
+    ? industryData?.map((items) => ({
+        inputDisplay: items?.name,
+        value: items?.uuid,
+      }))
+    : [];
+
   useEffect(() => {
     form.setValue("type", "product");
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!!newData) {
+      form.setValue("description", newData?.description);
+      form.setValue("industryId", newData?.industry?.uuid);
+      form.setValue("isTaxable", newData?.isTaxable);
+      form.setValue("name", newData?.name);
+    }
+  }, [isOpen, newData]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px]">
         <DialogHeader>
-          <DialogTitle>Create Goods/Services</DialogTitle>
+          <DialogTitle>
+            {!!newData ? "Update" : "Create"} Goods/Services
+          </DialogTitle>
           <DialogDescription>
             Goods/Services catalogs the products or services offered by
             businesses. Each entry is linked to a specific Industry for
@@ -86,6 +134,13 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
                   label="is taxable"
                   onBlur={field.onBlur}
                   error={form.formState.errors?.isTaxable}
+                  defaultValue={
+                    typeof field.value === "boolean"
+                      ? field.value
+                        ? "true"
+                        : "false"
+                      : undefined
+                  }
                   onValueChange={(value) =>
                     form.setValue("isTaxable", value === "true")
                   }
@@ -107,7 +162,7 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
                   onBlur={field.onBlur}
                   error={form.formState.errors?.industryId}
                   onValueChange={(value) => form.setValue("industryId", value)}
-                  options={[]}
+                  options={industryOptions}
                   placeholder={"e.g : select ..."}
                 />
               )}
@@ -123,8 +178,8 @@ const CreateProductModal: React.FC<ICreateProductModal> = ({
           </div>
           <DialogFooter>
             <Button variant="outline">Close</Button>
-            <CustomButton type="submit" isLoading={isPending}>
-              Create
+            <CustomButton type="submit" isLoading={isPending || isUpdating}>
+              {!!newData ? "Update" : "Create"}
             </CustomButton>
           </DialogFooter>
         </form>

@@ -9,6 +9,7 @@ const useMessage = () => {
   const newToast = ({ status, message }: TNewToast) =>
     toast[status](message, {
       className: "rounded-[0.3px]",
+      position: "top-center",
     });
   return newToast;
 };

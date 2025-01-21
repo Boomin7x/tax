@@ -17,14 +17,11 @@ const GodsAndServicesmain = () => {
     handleTitle("goods and services");
   }, []);
 
-  const [createModal, setCreateModal] = useState<{
-    open: boolean;
-    data?: object;
-  }>();
+  const [createModal, setCreateModal] = useState<ISheetState<IProduct>>();
   const [detailsModal, setDetailsModal] = useState<ISheetState<IProduct>>();
 
-  const createModalProps: ICreateProductModal = {
-    isOpen: createModal?.open as boolean,
+  const createModalProps: ISheet<IProduct> = {
+    isOpen: createModal?.isopen as boolean,
     data: createModal?.data,
     onClose: () => setCreateModal(undefined),
   };
@@ -40,7 +37,7 @@ const GodsAndServicesmain = () => {
   console.log({ data });
   return (
     <div className="flex flex-col">
-      <Button onClick={() => setCreateModal({ data: undefined, open: true })}>
+      <Button onClick={() => setCreateModal({ data: undefined, isopen: true })}>
         + create
       </Button>
 
@@ -48,12 +45,14 @@ const GodsAndServicesmain = () => {
         columns={productColumn({
           onDelete: () => {},
           onDetails: (data) => setDetailsModal({ isopen: true, data }),
-          onEdit: () => {},
+          onEdit: (data) => setCreateModal({ isopen: true, data }),
         })}
         data={productData ?? []}
       />
 
-      {createModal?.open ? <CreateProductModal {...createModalProps} /> : null}
+      {createModal?.isopen ? (
+        <CreateProductModal {...createModalProps} />
+      ) : null}
       {detailsModal?.isopen ? <ProductDetails {...detailModalProps} /> : null}
     </div>
   );
