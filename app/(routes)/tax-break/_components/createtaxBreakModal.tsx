@@ -13,13 +13,14 @@ import {
 import useMessage from "@/hooks/useMessage";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { isAxiosError } from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { v4 } from "uuid";
 import { ISheet } from "../../types";
 import useCreateTaxBreak from "../_hooks/useCreateTaxBreak";
 import { ITaxBreak } from "../_utils/type";
 import { ITaxBreakPayload, taxBreakSchema } from "../_utils/validation";
+import useUpdatetaxBreak from "../_hooks/useUpdatetaxBreak";
 
 const CreatetaxBreakModal: React.FC<ISheet<ITaxBreak>> = ({
   isOpen,
@@ -33,21 +34,40 @@ const CreatetaxBreakModal: React.FC<ISheet<ITaxBreak>> = ({
   });
 
   const message = useMessage();
-  const { mutate, isPending } = useCreateTaxBreak(v4());
+  const userId = useMemo(() => v4(), []);
+  const { mutate: updateFn, isPending: updating } = useUpdatetaxBreak(
+    newData?.uuid,
+    newData?.createdBy
+  );
+  const { mutate, isPending } = useCreateTaxBreak(userId);
   const onSubmit: SubmitHandler<ITaxBreakPayload> = (inputs) => {
     console.log({ inputs });
-    mutate(inputs, {
-      onSuccess: () => {
-        message({ message: "tax break created", status: "success" });
-      },
-      onError: (error) => {
-        if (isAxiosError(error))
-          message({
-            message: error?.response?.data?.message,
-            status: "error",
-          });
-      },
-    });
+    if (!!newData)
+      updateFn(inputs, {
+        onSuccess: () => {
+          message({ message: "tax break updated", status: "success" });
+        },
+        onError: (error) => {
+          if (isAxiosError(error))
+            message({
+              message: error?.response?.data?.message,
+              status: "error",
+            });
+        },
+      });
+    else
+      mutate(inputs, {
+        onSuccess: () => {
+          message({ message: "tax break created", status: "success" });
+        },
+        onError: (error) => {
+          if (isAxiosError(error))
+            message({
+              message: error?.response?.data?.message,
+              status: "error",
+            });
+        },
+      });
   };
   useEffect(() => {
     form.setValue("type", "exemption");
@@ -131,7 +151,7 @@ const CreatetaxBreakModal: React.FC<ISheet<ITaxBreak>> = ({
           </div>
           <DialogFooter>
             <Button variant="outline">Close</Button>
-            <CustomButton type="submit" isLoading={isPending}>
+            <CustomButton type="submit" isLoading={isPending || updating}>
               {!!newData ? "Update" : "Create"}
             </CustomButton>
           </DialogFooter>
