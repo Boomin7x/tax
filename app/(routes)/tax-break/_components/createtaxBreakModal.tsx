@@ -4,11 +4,11 @@ import TextInput from "@/components/TextInput";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTitle,
-  DialogHeader,
-  DialogFooter,
   DialogContent,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import useMessage from "@/hooks/useMessage";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,15 +16,17 @@ import { isAxiosError } from "axios";
 import React, { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { v4 } from "uuid";
-import { IModal } from "../../types";
+import { ISheet } from "../../types";
 import useCreateTaxBreak from "../_hooks/useCreateTaxBreak";
+import { ITaxBreak } from "../_utils/type";
 import { ITaxBreakPayload, taxBreakSchema } from "../_utils/validation";
 
-export type ICreatetaxBreakModal = IModal;
-const CreatetaxBreakModal: React.FC<ICreatetaxBreakModal> = ({
+const CreatetaxBreakModal: React.FC<ISheet<ITaxBreak>> = ({
   isOpen,
   onClose,
+  data,
 }) => {
+  const newData = data as ITaxBreak;
   const form = useForm<ITaxBreakPayload>({
     mode: "onChange",
     resolver: yupResolver(taxBreakSchema),
@@ -51,11 +53,25 @@ const CreatetaxBreakModal: React.FC<ICreatetaxBreakModal> = ({
     form.setValue("type", "exemption");
   }, [open]);
 
+  useEffect(() => {
+    if (!!newData) {
+      form.setValue(
+        "applicableTo",
+        newData?.applicableTo as ITaxBreakPayload["applicableTo"]
+      );
+      form.setValue("documentRequired", newData?.documentRequired);
+      form.setValue("eligilityCriteria", newData?.eligilityCriteria);
+      form.setValue("name", newData?.name);
+    }
+  }, [newData, isOpen]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px] ">
         <DialogHeader>
-          <DialogTitle>Create Tax Breaks</DialogTitle>
+          <DialogTitle>
+            {!!newData ? "Update" : "Create"} Tax Breaks
+          </DialogTitle>
           <DialogDescription>
             Exemptions/Reductions captures details about specific tax benefits,
             such as exemptions, reductions, or breaks. These may be granted to
@@ -99,7 +115,10 @@ const CreatetaxBreakModal: React.FC<ICreatetaxBreakModal> = ({
                   error={form.formState.errors?.applicableTo}
                   className="w-full"
                   onValueChange={(value) =>
-                    form.setValue("applicableTo", value as "PER")
+                    form.setValue(
+                      "applicableTo",
+                      value as ITaxBreakPayload["applicableTo"]
+                    )
                   }
                   options={[
                     { inputDisplay: "corporate", value: "corporate" },
@@ -113,7 +132,7 @@ const CreatetaxBreakModal: React.FC<ICreatetaxBreakModal> = ({
           <DialogFooter>
             <Button variant="outline">Close</Button>
             <CustomButton type="submit" isLoading={isPending}>
-              Create
+              {!!newData ? "Update" : "Create"}
             </CustomButton>
           </DialogFooter>
         </form>

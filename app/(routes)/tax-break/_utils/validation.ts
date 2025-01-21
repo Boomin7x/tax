@@ -6,7 +6,7 @@ export const taxBreakSchema = Yup.object().shape({
   documentRequired: Yup.string().required("Document required is required"),
   eligilityCriteria: Yup.string().required("Eligibility criteria is required"),
   applicableTo: Yup.string()
-    .oneOf(["PER"])
+    .oneOf(["personal", "corporate"])
     .required("Applicable to must be PER"),
   type: typeValidation,
 });

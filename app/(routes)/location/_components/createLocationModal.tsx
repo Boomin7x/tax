@@ -98,7 +98,7 @@ const CreateLocationModal: FC<ISheet<ILocation>> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px] ">
         <DialogHeader>
-          <DialogTitle>Create location</DialogTitle>
+          <DialogTitle>{!!newData ? "Update" : "Create"} location</DialogTitle>
           <DialogDescription>
             Location stores geographical information about where a business
             operates
@@ -197,7 +197,7 @@ const CreateLocationModal: FC<ISheet<ILocation>> = ({
           <DialogFooter>
             <Button variant="outline">Close</Button>
             <CustomButton type="submit" isLoading={isPending || isUpdating}>
-              Create
+              {!!newData ? "Update" : "Create"}
             </CustomButton>
           </DialogFooter>
         </form>

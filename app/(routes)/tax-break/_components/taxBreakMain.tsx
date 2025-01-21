@@ -18,21 +18,18 @@ const TaxBreakMain = () => {
     handleTitle("Tax break");
   }, []);
 
-  const [createModal, setCreateModal] = useState<{
-    data?: object;
-    open: boolean;
-  }>();
+  const [createModal, setCreateModal] = useState<ISheetState<ITaxBreak>>();
   const [detailsModal, setDetailsModal] = useState<ISheetState<ITaxBreak>>();
 
-  const createtaxBreakModalProps: ICreatetaxBreakModal = {
-    isOpen: createModal?.open as boolean,
+  const createtaxBreakModalProps: ISheet<ITaxBreak> = {
     data: createModal?.data,
+    isOpen: createModal?.isopen as boolean,
     onClose: () => setCreateModal(undefined),
   };
 
   const taxBreakDetailsProps: ISheet<ITaxBreak> = {
-    isOpen: detailsModal?.isopen as boolean,
     data: detailsModal?.data,
+    isOpen: detailsModal?.isopen as boolean,
     onClose: () => setDetailsModal(undefined),
   };
 
@@ -42,18 +39,18 @@ const TaxBreakMain = () => {
 
   return (
     <div className="flex flex-col">
-      <Button onClick={() => setCreateModal({ data: undefined, open: true })}>
+      <Button onClick={() => setCreateModal({ data: undefined, isopen: true })}>
         + create
       </Button>
       <DataTable
         columns={taxBreakColumn({
           onDelete: () => {},
           onDetails: (data) => setDetailsModal({ isopen: true, data }),
-          onEdit: () => {},
+          onEdit: (data) => setCreateModal({ isopen: true, data }),
         })}
         data={taxBreakData ?? []}
       />
-      {createModal?.open ? (
+      {createModal?.isopen ? (
         <CreatetaxBreakModal {...createtaxBreakModalProps} />
       ) : null}
       {detailsModal?.isopen ? (
