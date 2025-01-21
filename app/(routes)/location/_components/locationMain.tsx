@@ -12,16 +12,14 @@ import { locationColumn } from "../_utils/column";
 import LocationDetailsSheet from "./locationDetailsSheet";
 
 const LocationMain = () => {
-  const [createModal, setCreateModal] = useState<{
-    open: boolean;
-    data?: object;
-  }>();
+  const [createModal, setCreateModal] = useState<ISheetState<ILocation>>();
 
   const [detailsModal, setDetailsModal] = useState<ISheetState<ILocation>>();
 
   const CreateModalProps: ICreateLocationModal = {
-    isOpen: createModal?.open as boolean,
+    isOpen: createModal?.isopen as boolean,
     onClose: () => setCreateModal(undefined),
+    data: createModal?.data,
   };
   const detailsModalProps: ISheet<ILocation> = {
     isOpen: detailsModal?.isopen as boolean,
@@ -34,21 +32,21 @@ const LocationMain = () => {
   const locationMeta = data?.meta as Imeta;
   return (
     <div className="flex flex-col">
-      <Button
-        onClick={() => setCreateModal((prev) => ({ ...prev, open: true }))}
-      >
+      <Button onClick={() => setCreateModal({ data: undefined, isopen: true })}>
         + create
       </Button>
       <DataTable
         columns={locationColumn({
           onDelete: () => {},
           onDetails: (data) => setDetailsModal({ isopen: true, data }),
-          onEdit: () => {},
+          onEdit: (data) => setCreateModal({ isopen: true, data }),
         })}
         data={locationData ?? []}
       />
 
-      {createModal?.open ? <CreateLocationModal {...CreateModalProps} /> : null}
+      {createModal?.isopen ? (
+        <CreateLocationModal {...CreateModalProps} />
+      ) : null}
       {detailsModal?.isopen ? (
         <LocationDetailsSheet {...detailsModalProps} />
       ) : null}

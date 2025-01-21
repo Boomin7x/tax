@@ -42,11 +42,11 @@ export const industryApi = {
   ) => {
     try {
       const result = await axios.put(`/industry/${industryId}`, data, {
-        params: userId,
+        params: { userId },
       });
       return result?.data;
     } catch (error) {
-      console.error(error);
+      throw error;
     }
   },
   delete: async (industryId: string) => {

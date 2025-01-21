@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { v4 } from "uuid";
-import { IModal } from "../../types";
+import { IModal, ISheet } from "../../types";
 import { Button } from "@/components/ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -22,11 +22,22 @@ import CustomButton from "@/components/CustomButton";
 import TextAreaInput from "@/components/TextAreaInput";
 import useCreateLocation from "../_hooks/useCreateLocation";
 import { isAxiosError } from "axios";
+import { ILocation } from "../_utils/types";
+import useUpdateLocation from "../_hooks/useUpdateLocation";
 
-export type ICreateLocationModal = IModal;
-const CreateLocationModal: FC<ICreateLocationModal> = ({ isOpen, onClose }) => {
+const CreateLocationModal: FC<ISheet<ILocation>> = ({
+  isOpen,
+  onClose,
+  data,
+}) => {
+  const userId = useMemo(() => v4(), []);
+  const newData = data as ILocation;
   const message = useMessage();
-  const { mutate, isPending } = useCreateLocation(v4());
+  const { mutate: updateFn, isPending: isUpdating } = useUpdateLocation(
+    newData?.uuid,
+    userId
+  );
+  const { mutate, isPending } = useCreateLocation(userId);
 
   const form = useForm<ILocationPayload>({
     mode: "onChange",
@@ -35,21 +46,53 @@ const CreateLocationModal: FC<ICreateLocationModal> = ({ isOpen, onClose }) => {
 
   const onSubmit: SubmitHandler<ILocationPayload> = (inputs) => {
     console.log({ inputs });
-    mutate(inputs, {
-      onSuccess: () => {
-        message({ status: "success", message: "Location created" });
-        onClose();
-      },
-      onError: (error) => {
-        if (isAxiosError(error))
-          message({ message: error?.response?.data?.message, status: "error" });
-      },
-    });
+
+    if (!!newData)
+      updateFn(inputs, {
+        onSuccess: () => {
+          message({ status: "success", message: "Location updated" });
+          onClose();
+        },
+        onError: (error) => {
+          if (isAxiosError(error))
+            message({
+              message: error?.response?.data?.message,
+              status: "error",
+            });
+        },
+      });
+    else
+      mutate(inputs, {
+        onSuccess: () => {
+          message({ status: "success", message: "Location created" });
+          onClose();
+        },
+        onError: (error) => {
+          if (isAxiosError(error))
+            message({
+              message: error?.response?.data?.message,
+              status: "error",
+            });
+        },
+      });
   };
 
   useEffect(() => {
     form.setValue("type", "location");
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!!newData) {
+      form.setValue("address", newData?.address);
+      form.setValue("city", newData?.city);
+      form.setValue("country", newData?.country);
+      form.setValue("description", newData?.description);
+      form.setValue("name", newData?.name);
+      //  form.setValue("prefix", newData?.prefix);
+      form.setValue("region", newData?.region);
+      form.setValue("town", newData?.town);
+    }
+  }, [newData, isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -143,23 +186,6 @@ const CreateLocationModal: FC<ICreateLocationModal> = ({ isOpen, onClose }) => {
               />
             </div>
 
-            <Controller
-              name="type"
-              control={form.control}
-              render={({ field }) => (
-                <SelectInput
-                  isRequired
-                  label="Type"
-                  onBlur={field.onBlur}
-                  error={form.formState.errors?.type}
-                  onValueChange={(value) =>
-                    form.setValue("isTaxable", value === "true")
-                  }
-                  options={[]}
-                  placeholder={"e.g : select ..."}
-                />
-              )}
-            />
             <TextAreaInput
               isRequired
               label="description"
@@ -170,7 +196,7 @@ const CreateLocationModal: FC<ICreateLocationModal> = ({ isOpen, onClose }) => {
           </div>
           <DialogFooter>
             <Button variant="outline">Close</Button>
-            <CustomButton type="submit" isLoading={isPending}>
+            <CustomButton type="submit" isLoading={isPending || isUpdating}>
               Create
             </CustomButton>
           </DialogFooter>
