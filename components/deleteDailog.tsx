@@ -38,7 +38,11 @@ const DeleteDailog: FC<IDeleteDailog> = ({
           <Button variant="outline" onClick={onClose}>
             cancel
           </Button>
-          <CustomButton isLoading={isLoading} onClick={() => action(open?.id)}>
+          <CustomButton
+            variant="destructive"
+            isLoading={isLoading}
+            onClick={() => action(open?.id)}
+          >
             Continue
           </CustomButton>
         </DialogFooter>
