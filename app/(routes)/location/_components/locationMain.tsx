@@ -4,7 +4,7 @@ import DeleteDailog, { IDeleteDailog } from "@/components/deleteDailog";
 import { Button } from "@/components/ui/button";
 import useMessage from "@/hooks/useMessage";
 import { isAxiosError } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IDeleteModalState, Imeta, ISheet, ISheetState } from "../../types";
 import useDeleteLocation from "../_hooks/useDeleteLocation";
 import useGetAllLocation from "../_hooks/useGetAllLocation";
@@ -12,11 +12,18 @@ import { locationColumn } from "../_utils/column";
 import { ILocation } from "../_utils/types";
 import CreateLocationModal from "./createLocationModal";
 import LocationDetailsSheet from "./locationDetailsSheet";
+import Pagination, { IPagination } from "@/components/pagination";
+import useStore from "@/app/store/useStore";
 
 const LocationMain = () => {
+  const { handleTitle } = useStore();
+  useEffect(() => {
+    handleTitle("Location");
+  }, []);
   const message = useMessage();
   const { mutate, isPending } = useDeleteLocation();
-  const { data } = useGetAllLocation({ page: 1, limit: 10 });
+  const [page, setPage] = useState(1);
+  const { data } = useGetAllLocation({ page, limit: 10 });
   const locationData = data?.data as ILocation[];
   const locationMeta = data?.meta as Imeta;
 
@@ -54,9 +61,15 @@ const LocationMain = () => {
     onClose: () => setDeleteModal(undefined),
     open: deleteModal as IDeleteModalState,
   };
+  const paginationProps: IPagination = {
+    itemsPerPage: locationMeta?.itemsPerPage,
+    onPageChange: (page) => setPage(page),
+    totalItems: locationMeta?.totalItems,
+    align: "end",
+  };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col p-8">
       <Button onClick={() => setCreateModal({ data: undefined, isopen: true })}>
         + create
       </Button>
@@ -68,6 +81,9 @@ const LocationMain = () => {
         })}
         data={locationData ?? []}
       />
+      <div className="my-4 ">
+        <Pagination {...paginationProps} />
+      </div>
 
       {createModal?.isopen ? (
         <CreateLocationModal {...CreateModalProps} />

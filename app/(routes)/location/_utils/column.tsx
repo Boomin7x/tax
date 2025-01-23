@@ -37,6 +37,7 @@ export const locationColumn = ({
   {
     accessorKey: "createdAt",
     header: "Created At",
+    cell: ({ row }) => new Date(row.original?.createdAt).toLocaleString(),
   },
   {
     header: "actions",
