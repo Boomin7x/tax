@@ -7,7 +7,8 @@ const useCreateLocation = (userId: string) => {
   return useMutation({
     mutationKey: ["create-location"],
     mutationFn: (data: ILocationPayload) => locationApi.create(data, userId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [""] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["all-location"] }),
   });
 };
 

@@ -37,15 +37,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import "./loader.css";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoading?: boolean;
 }
 
 export const DataTable = <TData, TValue>({
   columns,
   data,
+  isLoading,
 }: DataTableProps<TData, TValue>) => {
   const table = useReactTable({
     data,
@@ -75,7 +78,16 @@ export const DataTable = <TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel()?.rows?.length ? (
+          {!isLoading ? (
+            <TableRow className="w-full ">
+              <TableCell
+                colSpan={columns.length}
+                className="h-24  flex items-center justify-center text-center"
+              >
+                <div className="loader" />
+              </TableCell>
+            </TableRow>
+          ) : table.getRowModel()?.rows?.length ? (
             table.getRowModel()?.rows.map((row) => (
               <TableRow
                 key={row.id}

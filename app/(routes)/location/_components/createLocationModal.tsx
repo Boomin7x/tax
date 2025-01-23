@@ -1,29 +1,29 @@
-import React, { FC, useEffect, useMemo } from "react";
 import {
   Dialog,
-  DialogTitle,
-  DialogHeader,
-  DialogFooter,
   DialogContent,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
+import { FC, useEffect, useMemo } from "react";
 
-import { v4 } from "uuid";
-import { IModal, ISheet } from "../../types";
 import { Button } from "@/components/ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { v4 } from "uuid";
+import { ISheet } from "../../types";
 import { ILocationPayload, locationSchema } from "../_utils/validation";
 
-import useMessage from "@/hooks/useMessage";
-import TextInput from "@/components/TextInput";
-import SelectInput from "@/components/SelectInput";
 import CustomButton from "@/components/CustomButton";
+import SelectInput from "@/components/SelectInput";
 import TextAreaInput from "@/components/TextAreaInput";
-import useCreateLocation from "../_hooks/useCreateLocation";
+import TextInput from "@/components/TextInput";
+import useMessage from "@/hooks/useMessage";
 import { isAxiosError } from "axios";
-import { ILocation } from "../_utils/types";
+import useCreateLocation from "../_hooks/useCreateLocation";
 import useUpdateLocation from "../_hooks/useUpdateLocation";
+import { ILocation } from "../_utils/types";
 
 const CreateLocationModal: FC<ISheet<ILocation>> = ({
   isOpen,
@@ -155,14 +155,6 @@ const CreateLocationModal: FC<ISheet<ILocation>> = ({
               />
             </div>
             <div className="flex items-center gap-5">
-              <TextInput
-                label="prefix"
-                isRequired
-                placeholder={"e.g : LOC"}
-                {...form.register("prefix")}
-                error={form.formState.errors?.prefix}
-              />
-
               <Controller
                 name="isTaxable"
                 control={form.control}
@@ -174,8 +166,12 @@ const CreateLocationModal: FC<ISheet<ILocation>> = ({
                     error={form.formState.errors?.isTaxable}
                     className="w-full"
                     onValueChange={(value) =>
-                      form.setValue("isTaxable", value === "true")
+                      form.setValue(
+                        "isTaxable",
+                        value as ILocationPayload["isTaxable"]
+                      )
                     }
+                    defaultValue={form.getValues("isTaxable")}
                     options={[
                       { inputDisplay: "TRUE", value: "true" },
                       { inputDisplay: "FALSE", value: "false" },
