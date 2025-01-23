@@ -28,6 +28,7 @@ import { IProductPayload, productSchema } from "../_utils/validation";
 import useGetAllIndustry from "../../industry/_hooks/useGetAllIndustry";
 import { IIndustry } from "../../industry/_utils/types";
 import useUpdateProduct from "../_hooks/useUpdateProduct";
+import { IIndustryPayload } from "../../industry/_utils/validation";
 
 const CreateProductModal: React.FC<ISheet<IProduct>> = ({
   isOpen,
@@ -98,11 +99,15 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
     if (!!newData) {
       form.setValue("description", newData?.description);
       form.setValue("industryId", newData?.industry?.uuid);
-      form.setValue("isTaxable", newData?.isTaxable);
+      form.setValue(
+        "isTaxable",
+        String(newData?.isTaxable) as IProductPayload["isTaxable"]
+      );
       form.setValue("name", newData?.name);
     }
   }, [isOpen, newData]);
 
+  console.log({ valuesProd: form.watch() });
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px]">
@@ -132,17 +137,13 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
                 <SelectInput
                   isRequired
                   label="is taxable"
-                  onBlur={field.onBlur}
+                  {...field}
                   error={form.formState.errors?.isTaxable}
-                  defaultValue={
-                    typeof field.value === "boolean"
-                      ? field.value
-                        ? "true"
-                        : "false"
-                      : undefined
-                  }
                   onValueChange={(value) =>
-                    form.setValue("isTaxable", value === "true")
+                    form.setValue(
+                      "isTaxable",
+                      value as IProductPayload["isTaxable"]
+                    )
                   }
                   options={[
                     { inputDisplay: "TRUE", value: "true" },
