@@ -3,7 +3,7 @@ import useStore from "@/app/store/useStore";
 import { DataTable } from "@/components/dataTable";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { IDeleteModalState, ISheet, ISheetState } from "../../types";
+import { IDeleteModalState, Imeta, ISheet, ISheetState } from "../../types";
 import useGetAllTaxBreak from "../_hooks/useGetAllTaxBreak";
 import { taxBreakColumn } from "../_utils/column";
 import { ITaxBreak } from "../_utils/type";
@@ -13,6 +13,7 @@ import DeleteDailog, { IDeleteDailog } from "@/components/deleteDailog";
 import useMessage from "@/hooks/useMessage";
 import useDeleteTaxBreak from "../_hooks/useDeleteTaxBreak";
 import { isAxiosError } from "axios";
+import Pagination, { IPagination } from "@/components/pagination";
 
 const TaxBreakMain = () => {
   const { handleTitle } = useStore();
@@ -22,8 +23,10 @@ const TaxBreakMain = () => {
 
   const message = useMessage();
   const { mutate, isPending } = useDeleteTaxBreak();
-  const { data } = useGetAllTaxBreak({ page: 1, limit: 10 });
+  const [page, setPage] = useState(1);
+  const { data } = useGetAllTaxBreak({ page, limit: 10 });
   const taxBreakData = data?.data as ITaxBreak[];
+  const taxBreakPagination = data?.meta as Imeta;
 
   const [deleteModal, setDeleteModal] = useState<IDeleteModalState>();
   const [createModal, setCreateModal] = useState<ISheetState<ITaxBreak>>();
@@ -61,9 +64,15 @@ const TaxBreakMain = () => {
     onClose: () => setDeleteModal(undefined),
     open: deleteModal as IDeleteModalState,
   };
+  const paginationProps: IPagination = {
+    itemsPerPage: taxBreakPagination?.itemsPerPage,
+    onPageChange: (page) => setPage(page),
+    totalItems: taxBreakPagination?.totalItems,
+    align: "end",
+  };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col p-8">
       <Button onClick={() => setCreateModal({ data: undefined, isopen: true })}>
         + create
       </Button>
@@ -75,6 +84,9 @@ const TaxBreakMain = () => {
         })}
         data={taxBreakData ?? []}
       />
+      <div className="my-4 ">
+        <Pagination {...paginationProps} />
+      </div>
       {createModal?.isopen ? (
         <CreatetaxBreakModal {...createtaxBreakModalProps} />
       ) : null}

@@ -7,7 +7,7 @@ import { ITaxBreak } from "./type";
 export const taxBreakApi = {
   create: async (userId: string, data: ITaxBreakPayload) => {
     const result = await axios.post(`/tax-breaks/create`, data, {
-      params: userId,
+      params: { userId },
     });
     return result?.data;
   },
@@ -28,7 +28,7 @@ export const taxBreakApi = {
     data: ITaxBreakPayload
   ) => {
     const result = await axios.put(`/tax-breaks/${taxBreaksId}`, data, {
-      params: userId,
+      params: { userId },
     });
     return result?.data;
   },

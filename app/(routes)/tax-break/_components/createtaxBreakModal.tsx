@@ -46,6 +46,7 @@ const CreatetaxBreakModal: React.FC<ISheet<ITaxBreak>> = ({
       updateFn(inputs, {
         onSuccess: () => {
           message({ message: "tax break updated", status: "success" });
+          onClose();
         },
         onError: (error) => {
           if (isAxiosError(error))
