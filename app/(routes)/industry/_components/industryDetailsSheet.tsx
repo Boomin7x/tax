@@ -29,11 +29,7 @@ const IndustryDetailsSheet = ({ isOpen, onClose, data }: ISheet<IIndustry>) => {
           {Object.keys(newData)
             .filter((a) => filterOut(a))
             .map((items) => {
-              if (
-                items === "products" &&
-                (newData[items as keyof typeof newData] as IProduct[]).length >
-                  1
-              ) {
+              if (items === "products") {
                 return (
                   <div key={v4()}>
                     <p className="text-sm font-semibold capitalize">

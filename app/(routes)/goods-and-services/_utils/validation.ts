@@ -4,7 +4,9 @@ import { typeValidation } from "../../utils";
 export const productSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
-  isTaxable: Yup.boolean().required(),
+  isTaxable: Yup.string()
+    .oneOf(["true", "false"], "must be true or false")
+    .required(),
   industryId: Yup.string()
     .required("Industry  is required")
     .matches(

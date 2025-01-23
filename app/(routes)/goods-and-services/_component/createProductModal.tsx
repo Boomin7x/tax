@@ -63,6 +63,11 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
               message: error?.response?.data?.message,
               status: "error",
             });
+          else
+            message({
+              message: "an error occured",
+              status: "error",
+            });
         },
       });
     else
@@ -74,7 +79,12 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
         onError: (error) => {
           if (isAxiosError(error))
             message({
-              message: error?.response?.data?.message,
+              message: error?.response?.data?.message ?? "an error occured",
+              status: "error",
+            });
+          else
+            message({
+              message: "an error occured",
               status: "error",
             });
         },
@@ -98,10 +108,15 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
     if (!!newData) {
       form.setValue("description", newData?.description);
       form.setValue("industryId", newData?.industry?.uuid);
-      form.setValue("isTaxable", newData?.isTaxable);
+      form.setValue(
+        "isTaxable",
+        String(newData?.isTaxable) as IProductPayload["isTaxable"]
+      );
       form.setValue("name", newData?.name);
     }
   }, [isOpen, newData]);
+
+  console.log({ data: form.watch(), newData });
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -132,23 +147,20 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
                 <SelectInput
                   isRequired
                   label="is taxable"
-                  onBlur={field.onBlur}
                   error={form.formState.errors?.isTaxable}
-                  defaultValue={
-                    typeof field.value === "boolean"
-                      ? field.value
-                        ? "true"
-                        : "false"
-                      : undefined
-                  }
-                  onValueChange={(value) =>
-                    form.setValue("isTaxable", value === "true")
-                  }
                   options={[
                     { inputDisplay: "TRUE", value: "true" },
                     { inputDisplay: "FALSE", value: "false" },
                   ]}
+                  onValueChange={(value) =>
+                    form.setValue(
+                      "isTaxable",
+                      value as IProductPayload["isTaxable"]
+                    )
+                  }
                   placeholder={"e.g : select ..."}
+                  {...field}
+                  defaultValue={form.getValues("isTaxable")}
                 />
               )}
             />
@@ -164,6 +176,7 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
                   onValueChange={(value) => form.setValue("industryId", value)}
                   options={industryOptions}
                   placeholder={"e.g : select ..."}
+                  defaultValue={form.getValues("industryId")}
                 />
               )}
             />

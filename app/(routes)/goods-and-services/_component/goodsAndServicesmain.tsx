@@ -14,12 +14,19 @@ import DeleteDailog from "@/components/deleteDailog";
 import useDeleteProduct from "../_hooks/useDeleteProduct";
 import { isAxiosError } from "axios";
 import useMessage from "@/hooks/useMessage";
+import Pagination, { IPagination } from "@/components/pagination";
 
 const GodsAndServicesmain = () => {
   const { handleTitle } = useStore();
   useEffect(() => {
     handleTitle("goods and services");
   }, []);
+
+  const message = useMessage();
+  const [page, setPage] = useState(1);
+  const { data } = useGetAllProduct({ page: page, limit: 10 });
+  const productData = data?.data as IProduct[];
+  const productMeta = data?.meta as Imeta;
 
   const [deleteModal, setDeleteModal] = useState<IDeleteModalState>();
   const [createModal, setCreateModal] = useState<ISheetState<IProduct>>();
@@ -36,10 +43,10 @@ const GodsAndServicesmain = () => {
     onClose: () => setDetailsModal(undefined),
   };
 
-  const message = useMessage();
-  const { data } = useGetAllProduct({ page: 1, limit: 10 });
-  const productData = data?.data as IProduct[];
-  const productMeta = data?.meta as Imeta;
+  const paginationProps: IPagination = {
+    itemsPerPage: productMeta?.itemsPerPage,
+    onPageChange: (page) => setPage(page),
+  };
 
   const { mutate, isPending } = useDeleteProduct();
 
@@ -70,6 +77,8 @@ const GodsAndServicesmain = () => {
         })}
         data={productData ?? []}
       />
+
+      <Pagination totalItems={} />
 
       {createModal?.isopen ? (
         <CreateProductModal {...createModalProps} />
