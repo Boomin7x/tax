@@ -44,3 +44,8 @@ export interface IColumnProps<T> {
   onEdit: (data: T) => void;
   onDelete: (data: T) => void;
 }
+
+export interface IDeleteModalState {
+  open: boolean;
+  id: string;
+}
