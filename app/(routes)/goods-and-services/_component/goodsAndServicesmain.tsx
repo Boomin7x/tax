@@ -1,20 +1,20 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import useStore from "@/app/store/useStore";
-import { Button } from "@/components/ui/button";
-import CreateProductModal, { ICreateProductModal } from "./createProductModal";
 import { DataTable } from "@/components/dataTable";
-import useGetAllProduct from "../_hooks/useGetAllProduct";
-import { IProduct } from "../_utils/types";
-import { IDeleteModalState, Imeta, ISheet, ISheetState } from "../../types";
-import { productColumn } from "../_utils/column";
-import ProductDetails from "./productDetails";
 import DeleteDailog from "@/components/deleteDailog";
-import useDeleteProduct from "../_hooks/useDeleteProduct";
-import { isAxiosError } from "axios";
-import useMessage from "@/hooks/useMessage";
 import Pagination, { IPagination } from "@/components/pagination";
+import { Button } from "@/components/ui/button";
+import useMessage from "@/hooks/useMessage";
+import { isAxiosError } from "axios";
+import { IDeleteModalState, Imeta, ISheet, ISheetState } from "../../types";
+import useDeleteProduct from "../_hooks/useDeleteProduct";
+import useGetAllProduct from "../_hooks/useGetAllProduct";
+import { productColumn } from "../_utils/column";
+import { IProduct } from "../_utils/types";
+import CreateProductModal from "./createProductModal";
+import ProductDetails from "./productDetails";
 
 const GodsAndServicesmain = () => {
   const { handleTitle } = useStore();
@@ -46,6 +46,8 @@ const GodsAndServicesmain = () => {
   const paginationProps: IPagination = {
     itemsPerPage: productMeta?.itemsPerPage,
     onPageChange: (page) => setPage(page),
+    totalItems: productMeta?.totalItems,
+    align: "end",
   };
 
   const { mutate, isPending } = useDeleteProduct();
@@ -64,7 +66,7 @@ const GodsAndServicesmain = () => {
   };
   console.log({ data });
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col p-8">
       <Button onClick={() => setCreateModal({ data: undefined, isopen: true })}>
         + create
       </Button>
@@ -78,7 +80,9 @@ const GodsAndServicesmain = () => {
         data={productData ?? []}
       />
 
-      <Pagination totalItems={} />
+      <div className="my-4 ">
+        <Pagination {...paginationProps} />
+      </div>
 
       {createModal?.isopen ? (
         <CreateProductModal {...createModalProps} />

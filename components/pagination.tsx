@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button } from "./ui/button";
 import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -68,7 +68,7 @@ const Pagination = ({
         size="sm"
         onClick={() => handlePageChange(1)}
         disabled={currentPage === 1}
-        className="bg-neutral-900 rounded-sm"
+        variant="outline"
       >
         First
       </Button>
@@ -93,7 +93,7 @@ const Pagination = ({
         size="sm"
         onClick={() => handlePageChange(totalPages)}
         disabled={currentPage === totalPages}
-        className="bg-neutral-900 rounded-sm"
+        variant="outline"
       >
         Last
       </Button>

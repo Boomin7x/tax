@@ -14,11 +14,13 @@ import DeleteDailog, { IDeleteDailog } from "@/components/deleteDailog";
 import useDeleteIndustry from "../_hooks/useDeleteIndustry";
 import useMessage from "@/hooks/useMessage";
 import { isAxiosError } from "axios";
+import Pagination, { IPagination } from "@/components/pagination";
 
 const IndustryMain = () => {
   const { handleTitle } = useStore();
+  const [page, setPage] = useState(1);
   const { data } = useGetAllIndustry({
-    page: 1,
+    page: page,
     limit: 10,
   });
 
@@ -64,12 +66,19 @@ const IndustryMain = () => {
     open: deleteModal as IDeleteModalState,
   };
 
+  const paginationProps: IPagination = {
+    itemsPerPage: industryPagination?.itemsPerPage,
+    onPageChange: (page) => setPage(page),
+    totalItems: industryPagination?.totalItems,
+    align: "end",
+  };
+
   useEffect(() => {
     handleTitle("Industry");
   }, []);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col p-8">
       <Button
         onClick={() => setCreateModal((prev) => ({ ...prev, isopen: true }))}
       >
@@ -83,6 +92,9 @@ const IndustryMain = () => {
         })}
         data={industryData ?? []}
       />
+      <div className="my-4 ">
+        <Pagination {...paginationProps} />
+      </div>
       {createModal?.isopen ? (
         <CreateIndustryModal {...createIndustryModalProps} />
       ) : null}
