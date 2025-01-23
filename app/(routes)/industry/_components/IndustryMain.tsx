@@ -34,7 +34,7 @@ const IndustryMain = () => {
   const deleteFn = (id: string) => {
     mutate(id, {
       onSuccess: () => {
-        message({ message: "Product deleted", status: "success" });
+        message({ message: "Industry deleted", status: "success" });
         setDeleteModal(undefined);
       },
       onError: (error) => {

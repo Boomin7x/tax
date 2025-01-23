@@ -27,7 +27,7 @@ const LocationMain = () => {
   const deleteFn = (id: string) => {
     mutate(id, {
       onSuccess: () => {
-        message({ message: "Product deleted", status: "success" });
+        message({ message: "Location deleted", status: "success" });
         setDeleteModal(undefined);
       },
       onError: (error) => {
