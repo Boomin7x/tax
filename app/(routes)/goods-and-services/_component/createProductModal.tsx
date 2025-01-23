@@ -22,13 +22,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { isAxiosError } from "axios";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { v4 } from "uuid";
-import { ISheet } from "../../types";
-import { IProduct } from "../_utils/types";
-import { IProductPayload, productSchema } from "../_utils/validation";
 import useGetAllIndustry from "../../industry/_hooks/useGetAllIndustry";
 import { IIndustry } from "../../industry/_utils/types";
+import { ISheet } from "../../types";
 import useUpdateProduct from "../_hooks/useUpdateProduct";
-import { IIndustryPayload } from "../../industry/_utils/validation";
+import { IProduct } from "../_utils/types";
+import { IProductPayload, productSchema } from "../_utils/validation";
 
 const CreateProductModal: React.FC<ISheet<IProduct>> = ({
   isOpen,
@@ -64,6 +63,11 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
               message: error?.response?.data?.message,
               status: "error",
             });
+          else
+            message({
+              message: "an error occured",
+              status: "error",
+            });
         },
       });
     else
@@ -75,7 +79,12 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
         onError: (error) => {
           if (isAxiosError(error))
             message({
-              message: error?.response?.data?.message,
+              message: error?.response?.data?.message ?? "an error occured",
+              status: "error",
+            });
+          else
+            message({
+              message: "an error occured",
               status: "error",
             });
         },
@@ -107,7 +116,8 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
     }
   }, [isOpen, newData]);
 
-  console.log({ valuesProd: form.watch() });
+  console.log({ data: form.watch(), newData });
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="rounded-[0.3px]">
@@ -137,19 +147,20 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
                 <SelectInput
                   isRequired
                   label="is taxable"
-                  {...field}
                   error={form.formState.errors?.isTaxable}
+                  options={[
+                    { inputDisplay: "TRUE", value: "true" },
+                    { inputDisplay: "FALSE", value: "false" },
+                  ]}
                   onValueChange={(value) =>
                     form.setValue(
                       "isTaxable",
                       value as IProductPayload["isTaxable"]
                     )
                   }
-                  options={[
-                    { inputDisplay: "TRUE", value: "true" },
-                    { inputDisplay: "FALSE", value: "false" },
-                  ]}
                   placeholder={"e.g : select ..."}
+                  {...field}
+                  defaultValue={form.getValues("isTaxable")}
                 />
               )}
             />
@@ -165,6 +176,7 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
                   onValueChange={(value) => form.setValue("industryId", value)}
                   options={industryOptions}
                   placeholder={"e.g : select ..."}
+                  defaultValue={form.getValues("industryId")}
                 />
               )}
             />

@@ -8,7 +8,7 @@ export const taxationSchema = yup.object().shape({
     .oneOf(["percentage", "flat"])
     .required("Rate type is required"),
   taxRate: yup.number().required("Tax rate is required"),
-  flateRate: yup.number().required("Flat rate is required"),
+  flatRate: yup.number().required("Flat rate is required"),
   applicableToLocations: yup
     .string()
     .required("Applicable locations are required"),
@@ -21,7 +21,6 @@ export const taxationSchema = yup.object().shape({
   applicableToBreaks: yup.string().required("Applicable breaks are required"),
   validityStartDate: yup.date().required("Validity start date is required"),
   validityEndDate: yup.date().required("Validity end date is required"),
-  type: yup.string().oneOf(["product", "service"]).required("Type is required"),
 });
 
 export type ITaxationPayload = yup.InferType<typeof taxationSchema>;

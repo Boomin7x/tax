@@ -8,7 +8,8 @@ const useUpdateLocation = (locationId: string, userId: string) => {
     mutationKey: ["update-location"],
     mutationFn: (data: ILocationPayload) =>
       locationApi.update(locationId, userId, data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: [""] }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["all-location"] }),
   });
 };
 

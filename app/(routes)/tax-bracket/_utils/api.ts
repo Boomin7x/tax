@@ -8,10 +8,11 @@ export const taxBracketApi = {
   create: async (userId: string, data: ItaxtBracketPayload) => {
     try {
       const result = await axios.post(`/tax-bracket/create`, data, {
-        params: userId,
+        params: { userId },
       });
       return result?.data;
     } catch (error) {
+      console.error(error);
       throw error;
     }
   },
@@ -41,7 +42,7 @@ export const taxBracketApi = {
   ) => {
     try {
       const result = await axios.put(`/tax-bracket/${taxBracketId}`, data, {
-        params: userId,
+        params: { userId },
       });
       return result?.data;
     } catch (error) {

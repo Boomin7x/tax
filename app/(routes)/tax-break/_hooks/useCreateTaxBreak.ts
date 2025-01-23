@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { taxBreakApi } from "../_utils/api";
-import { IFilter } from "../../types";
 import { ITaxBreakPayload } from "../_utils/validation";
 
 const useCreateTaxBreak = (userId: string) => {

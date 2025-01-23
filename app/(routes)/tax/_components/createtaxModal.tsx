@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { v4 as uuidv4 } from "uuid";
-import { IModal } from "../../types";
+import { IModal, ISheet } from "../../types";
 import { Button } from "@/components/ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -22,9 +22,17 @@ import CustomButton from "@/components/CustomButton";
 import useCreateTaxation from "../_hooks/useCreateTaxation";
 import useMessage from "@/hooks/useMessage";
 import TextAreaInput from "@/components/TextAreaInput";
+import { isAxiosError } from "axios";
+import { ITaxations } from "../_utils/types";
+import useUpdateTaxations from "../_hooks/useUpdateTaxations";
 
 export type ICreatetaxModal = IModal;
-const CreatetaxModal: React.FC<ICreatetaxModal> = ({ isOpen, onClose }) => {
+const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
+  isOpen,
+  onClose,
+  data,
+}) => {
+  const newData = data as ITaxations;
   const form = useForm<ITaxationPayload>({
     mode: "onChange",
     resolver: yupResolver(taxationSchema),
@@ -33,37 +41,92 @@ const CreatetaxModal: React.FC<ICreatetaxModal> = ({ isOpen, onClose }) => {
   const message = useMessage();
   const userId = useMemo(() => uuidv4(), []);
   const { mutate, isPending } = useCreateTaxation(userId);
+  const { mutate: update, isPending: updating } = useUpdateTaxations(
+    newData?.uuid,
+    userId
+  );
   const onSubmit: SubmitHandler<ITaxationPayload> = (inputs) => {
-    console.log({ inputs });
+    if (!!newData)
+      update(inputs, {
+        onSuccess: () => {
+          message({ message: "Tax Updated", status: "success" });
+          onClose();
+        },
+        onError: (error) => {
+          if (isAxiosError(error))
+            message({
+              message: error?.response?.data?.message,
+              status: "error",
+            });
+        },
+      });
+    else
+      mutate(inputs, {
+        onSuccess: () => {
+          message({ message: "Tax Created", status: "success" });
+          onClose();
+        },
+        onError: (error) => {
+          if (isAxiosError(error))
+            message({
+              message: error?.response?.data?.message,
+              status: "error",
+            });
+        },
+      });
   };
+
+  useEffect(() => {
+    if (!!newData) {
+      form.setValue("applicableToBrackets", newData?.applicableToBrackets);
+      form.setValue("applicableToBreaks", newData?.applicableToBreaks);
+      form.setValue("applicableToLocations", newData?.applicableToLocations);
+      form.setValue(
+        "applicableToProductService",
+        newData?.applicableToProductService
+      );
+      form.setValue("description", newData?.description);
+      form.setValue("flatRate", newData?.flatRate as number);
+      form.setValue("name", newData?.name);
+      form.setValue("rateType", newData?.rateType);
+      form.setValue("taxRate", newData?.taxRate);
+      form.setValue(
+        "validityEndDate",
+        newData?.validityEndDate
+          ? new Date(newData?.validityEndDate as string)
+          : ("" as unknown as Date)
+      );
+      form.setValue(
+        "validityStartDate",
+        newData?.validityStartDate
+          ? new Date(newData?.validityStartDate as string)
+          : ("" as unknown as Date)
+      );
+    }
+  }, [isOpen, newData]);
+
+  console.log({ error: form.formState.errors, valid: form.formState.isValid });
 
   return (
     <Dialog open={isOpen} onOpenChange={() => onClose()}>
-      <DialogContent className="rounded-[0.3px] ">
+      <DialogContent className="rounded-[0.3px] min-w-[50vw] ">
         <DialogHeader>
-          <DialogTitle>Create Tax Breaks</DialogTitle>
+          <DialogTitle>{!!newData ? "Update" : "Create"} Tax </DialogTitle>
           <DialogDescription>
-            Exemptions/Reductions captures details about specific tax benefits,
-            such as exemptions, reductions, or breaks. These may be granted to
-            businesses based on industry, location, or qualifying conditions
-            (e.g., startups, certifications)
+            Taxes records the various types of taxes applicable within the
+            system. Each tax entry specifies the tax rate, calculation method,
+            and criteria it applies to (e.g., industry, location, tax bracket,
+            or exemptions)
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-5 py-5 pb-7 max-h-[80vh] overflow-y-auto">
+          <div className="grid grid-cols-2 gap-5 py-5 pb-7 max-h-[80vh] overflow-y-auto">
             <TextInput
               label="tax name"
               isRequired
               placeholder={"e.g : tax  a"}
               {...form.register("name")}
               error={form.formState.errors?.name}
-            />
-            <TextAreaInput
-              label="description"
-              isRequired
-              placeholder={"description here ... "}
-              {...form.register("description")}
-              error={form.formState.errors?.description}
             />
 
             <Controller
@@ -110,7 +173,7 @@ const CreatetaxModal: React.FC<ICreatetaxModal> = ({ isOpen, onClose }) => {
               )}
             />
             <Controller
-              name="flateRate"
+              name="flatRate"
               control={form.control}
               render={({ field }) => (
                 <TextInput
@@ -121,9 +184,9 @@ const CreatetaxModal: React.FC<ICreatetaxModal> = ({ isOpen, onClose }) => {
                   {...field}
                   onChange={(e) => {
                     const value = parseFloat(e.target.value);
-                    form.setValue("flateRate", value);
+                    form.setValue("flatRate", value);
                   }}
-                  error={form.formState.errors?.flateRate}
+                  error={form.formState.errors?.flatRate}
                 />
               )}
             />
@@ -169,11 +232,27 @@ const CreatetaxModal: React.FC<ICreatetaxModal> = ({ isOpen, onClose }) => {
               {...form.register("validityEndDate")}
               error={form.formState.errors?.validityEndDate}
             />
+            <div className="col-span-2">
+              <TextAreaInput
+                label="description"
+                isRequired
+                placeholder={"description here ... "}
+                {...form.register("description")}
+                error={form.formState.errors?.description}
+                className="min-h-[6rem]"
+              />
+            </div>
           </div>
           <DialogFooter>
-            <Button variant="outline">Close</Button>
-            <CustomButton type="submit" isLoading={isPending}>
-              Create
+            <Button variant="outline" onClick={onClose}>
+              Close
+            </Button>
+            <CustomButton
+              // disabled={!form.formState.isValid}
+              type="submit"
+              isLoading={isPending || updating}
+            >
+              {!!newData ? "Update" : "Create"}
             </CustomButton>
           </DialogFooter>
         </form>

@@ -1,5 +1,6 @@
 import * as yup from "yup";
 import { typeValidation } from "../../utils";
+import { IProduct } from "../../goods-and-services/_utils/types";
 export type IIndustry = {
   uuid: string;
   createdAt: string;
@@ -12,4 +13,5 @@ export type IIndustry = {
   type: yup.InferType<typeof typeValidation>;
   industryCode: string;
   description: string;
+  products: IProduct[];
 };

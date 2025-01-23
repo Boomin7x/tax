@@ -25,7 +25,7 @@ const AppSidebar = () => {
   const pathName = usePathname();
   const items = [
     {
-      title: "Tax",
+      title: "Taxations",
       url: "/",
       icon: HandCoins,
       isActive: pathName === "/",

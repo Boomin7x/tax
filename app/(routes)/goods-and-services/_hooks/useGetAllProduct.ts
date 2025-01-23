@@ -4,7 +4,7 @@ import { IFilter } from "../../types";
 
 const useGetAllProduct = (filters: IFilter) => {
   return useQuery({
-    queryKey: ["all-product"],
+    queryKey: ["all-product", filters],
     queryFn: () => productApi.getAll(filters),
   });
 };

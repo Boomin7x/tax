@@ -9,8 +9,11 @@ export const locationSchema = yup.object().shape({
   region: yup.string().required("Region is required"),
   country: yup.string().required("Country is required"),
   description: yup.string().required("Description is required"),
-  isTaxable: yup.boolean().required("Taxable status is required"),
-  prefix: yup.string().required("Prefix is required"),
+  isTaxable: yup
+    .string()
+    .oneOf(["true", "false"], "must be either true or false")
+    .required("Taxable status is required"),
+
   type: typeValidation,
 });
 

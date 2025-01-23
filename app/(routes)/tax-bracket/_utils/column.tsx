@@ -27,6 +27,7 @@ export const taxtBracketColumn = ({
   {
     accessorKey: "createdAt",
     header: "created At",
+    cell: ({ row }) => new Date(row.original?.createdAt).toLocaleString(),
   },
   {
     header: "actions",

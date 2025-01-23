@@ -7,8 +7,12 @@ import { IProduct } from "./types";
 export const productApi = {
   create: async (userId: string, data: IProductPayload) => {
     try {
-      const result = await axios.post(`/product/create`, data, {
-        params: userId,
+      const newData = {
+        ...data,
+        isTaxable: data?.isTaxable === "true",
+      };
+      const result = await axios.post(`/product/create`, newData, {
+        params: { userId },
       });
       return result?.data;
     } catch (error) {
@@ -36,7 +40,11 @@ export const productApi = {
   },
   update: async (productId: string, userId: string, data: IProductPayload) => {
     try {
-      const result = await axios.put(`/product/${productId}`, data, {
+      const newData = {
+        ...data,
+        isTaxable: data?.isTaxable === "true",
+      };
+      const result = await axios.put(`/product/${productId}`, newData, {
         params: { userId },
       });
       return result?.data;

@@ -26,7 +26,11 @@ export const locationApi = {
   },
   create: async (data: ILocationPayload, userId: string) => {
     try {
-      const result = await axios.post(`/location/create`, data, {
+      const newData = {
+        ...data,
+        isTaxable: data?.isTaxable === "true",
+      };
+      const result = await axios.post(`/location/create`, newData, {
         params: { userId },
       });
       return result?.data;
@@ -40,8 +44,12 @@ export const locationApi = {
     data: ILocationPayload
   ) => {
     try {
-      const result = await axios.put(`/location/${locationId}`, data, {
-        params: userId,
+      const newData = {
+        ...data,
+        isTaxable: data?.isTaxable === "true",
+      };
+      const result = await axios.put(`/location/${locationId}`, newData, {
+        params: { userId },
       });
       return result?.data;
     } catch (error) {
