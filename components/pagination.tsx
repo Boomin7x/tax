@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from "react";
-import { Button } from "./ui/button";
-import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
+import { useState } from "react";
+import { Button } from "./ui/button";
 
 export interface IPagination {
   totalItems: number;

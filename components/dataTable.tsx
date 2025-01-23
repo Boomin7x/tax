@@ -79,12 +79,11 @@ export const DataTable = <TData, TValue>({
         </TableHeader>
         <TableBody>
           {!isLoading ? (
-            <TableRow className="w-full ">
-              <TableCell
-                colSpan={columns.length}
-                className="h-24  flex items-center justify-center text-center"
-              >
-                <div className="loader" />
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center ">
+                <div className=" flex aspect-[4/1] items-center justify-center">
+                  <div className="loader" />
+                </div>
               </TableCell>
             </TableRow>
           ) : table.getRowModel()?.rows?.length ? (
