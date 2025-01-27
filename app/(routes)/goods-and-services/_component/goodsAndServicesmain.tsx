@@ -22,12 +22,13 @@ const GodsAndServicesmain = () => {
     handleTitle("goods and services");
   }, []);
 
-  const message = useMessage();
   const [page, setPage] = useState(1);
   const { data } = useGetAllProduct({ page: page, limit: 10 });
   const productData = data?.data as IProduct[];
   const productMeta = data?.meta as Imeta;
 
+  const message = useMessage();
+  const { mutate, isPending } = useDeleteProduct();
   const [deleteModal, setDeleteModal] = useState<IDeleteModalState>();
   const [createModal, setCreateModal] = useState<ISheetState<IProduct>>();
   const [detailsModal, setDetailsModal] = useState<ISheetState<IProduct>>();
@@ -49,8 +50,6 @@ const GodsAndServicesmain = () => {
     totalItems: productMeta?.totalItems,
     align: "end",
   };
-
-  const { mutate, isPending } = useDeleteProduct();
 
   const deleteFn = (id: string) => {
     mutate(id, {
