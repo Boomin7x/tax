@@ -1,20 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
 
+import { isAxiosError } from "axios";
+import { IProduct } from "../_utils/types";
+import useMessage from "@/hooks/useMessage";
 import useStore from "@/app/store/useStore";
+import ProductDetails from "./productDetails";
+import { Button } from "@/components/ui/button";
+import { productColumn } from "../_utils/column";
 import { DataTable } from "@/components/dataTable";
 import DeleteDailog from "@/components/deleteDailog";
-import Pagination, { IPagination } from "@/components/pagination";
-import { Button } from "@/components/ui/button";
-import useMessage from "@/hooks/useMessage";
-import { isAxiosError } from "axios";
-import { IDeleteModalState, Imeta, ISheet, ISheetState } from "../../types";
-import useDeleteProduct from "../_hooks/useDeleteProduct";
-import useGetAllProduct from "../_hooks/useGetAllProduct";
-import { productColumn } from "../_utils/column";
-import { IProduct } from "../_utils/types";
 import CreateProductModal from "./createProductModal";
-import ProductDetails from "./productDetails";
+import useGetAllProduct from "../_hooks/useGetAllProduct";
+import useDeleteProduct from "../_hooks/useDeleteProduct";
+import Pagination, { IPagination } from "@/components/pagination";
+import { IDeleteModalState, Imeta, ISheet, ISheetState } from "../../types";
 
 const GodsAndServicesmain = () => {
   const { handleTitle } = useStore();
@@ -34,21 +34,21 @@ const GodsAndServicesmain = () => {
   const [detailsModal, setDetailsModal] = useState<ISheetState<IProduct>>();
 
   const createModalProps: ISheet<IProduct> = {
-    isOpen: createModal?.isopen as boolean,
     data: createModal?.data,
+    isOpen: createModal?.isopen as boolean,
     onClose: () => setCreateModal(undefined),
   };
   const detailModalProps: ISheet<IProduct> = {
-    isOpen: detailsModal?.isopen as boolean,
     data: detailsModal?.data,
+    isOpen: detailsModal?.isopen as boolean,
     onClose: () => setDetailsModal(undefined),
   };
 
   const paginationProps: IPagination = {
-    itemsPerPage: productMeta?.itemsPerPage,
-    onPageChange: (page) => setPage(page),
-    totalItems: productMeta?.totalItems,
     align: "end",
+    totalItems: productMeta?.totalItems,
+    onPageChange: (page) => setPage(page),
+    itemsPerPage: productMeta?.itemsPerPage,
   };
 
   const deleteFn = (id: string) => {
@@ -72,9 +72,9 @@ const GodsAndServicesmain = () => {
 
       <DataTable
         columns={productColumn({
-          onDelete: (data) => setDeleteModal({ id: data?.uuid, open: true }),
-          onDetails: (data) => setDetailsModal({ isopen: true, data }),
           onEdit: (data) => setCreateModal({ isopen: true, data }),
+          onDetails: (data) => setDetailsModal({ isopen: true, data }),
+          onDelete: (data) => setDeleteModal({ id: data?.uuid, open: true }),
         })}
         data={productData ?? []}
       />
@@ -91,10 +91,10 @@ const GodsAndServicesmain = () => {
       {deleteModal?.open ? (
         <DeleteDailog
           action={deleteFn}
-          desc="This will delete Product, and this process is irreversible"
+          open={deleteModal}
           isLoading={isPending}
           onClose={() => setDeleteModal(undefined)}
-          open={deleteModal}
+          desc="This will delete Product, and this process is irreversible"
         />
       ) : null}
     </div>
