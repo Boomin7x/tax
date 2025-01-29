@@ -15,6 +15,8 @@ import useGetAllProduct from "../_hooks/useGetAllProduct";
 import useDeleteProduct from "../_hooks/useDeleteProduct";
 import Pagination, { IPagination } from "@/components/pagination";
 import { IDeleteModalState, Imeta, ISheet, ISheetState } from "../../types";
+import TextInput from "@/components/TextInput";
+import { RotateCcw, SearchIcon } from "lucide-react";
 
 const GodsAndServicesmain = () => {
   const { handleTitle } = useStore();
@@ -23,7 +25,12 @@ const GodsAndServicesmain = () => {
   }, []);
 
   const [page, setPage] = useState(1);
-  const { data } = useGetAllProduct({ page: page, limit: 10 });
+  const [search, setSearch] = useState("");
+  const { data, isLoading } = useGetAllProduct({
+    page: page,
+    limit: 10,
+    search,
+  });
   const productData = data?.data as IProduct[];
   const productMeta = data?.meta as Imeta;
 
@@ -51,6 +58,11 @@ const GodsAndServicesmain = () => {
     itemsPerPage: productMeta?.itemsPerPage,
   };
 
+  const onReset = () => {
+    setPage(1);
+    setSearch("");
+  };
+
   const deleteFn = (id: string) => {
     mutate(id, {
       onSuccess: () => {
@@ -65,10 +77,31 @@ const GodsAndServicesmain = () => {
   };
   console.log({ data });
   return (
-    <div className="flex flex-col p-8">
-      <Button onClick={() => setCreateModal({ data: undefined, isopen: true })}>
-        + create
-      </Button>
+    <div className="flex flex-col gap-3 p-8">
+      <h4 className="text-2xl"> List</h4>
+      <div className="flex items-center gap-2">
+        <p>Total items - {productMeta?.totalItems ?? 0}</p>|{" "}
+        <Button className="gap-2" variant="link" onClick={onReset}>
+          <RotateCcw className="w-4 h-4" />
+          Reset
+        </Button>
+      </div>
+      <div className="flex items-center justify-between ">
+        <div className="w-1/3">
+          <TextInput
+            leftIcon={<SearchIcon className="w-4 h-4" />}
+            className="pl-11"
+            value={search}
+            placeholder="Search all taxes"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <Button
+          onClick={() => setCreateModal({ data: undefined, isopen: true })}
+        >
+          + create
+        </Button>
+      </div>
 
       <DataTable
         columns={productColumn({
@@ -77,6 +110,7 @@ const GodsAndServicesmain = () => {
           onDelete: (data) => setDeleteModal({ id: data?.uuid, open: true }),
         })}
         data={productData ?? []}
+        isLoading={isLoading}
       />
 
       <div className="my-4 ">

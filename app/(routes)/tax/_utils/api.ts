@@ -1,10 +1,13 @@
 import axios from "@/config/axios.config";
-import { IGetAllTaxation } from "./types";
+import { IGetAllTaxation, ITaxations } from "./types";
 import { ITaxationPayload } from "./validation";
 import { paramsCheck } from "../../utils";
+import { IResponse } from "../../types";
 
 export const taxApi = {
-  getAll: async (filters: IGetAllTaxation) => {
+  getAll: async (
+    filters: IGetAllTaxation
+  ): Promise<IResponse & { data: ITaxations[] }> => {
     const params = paramsCheck(filters);
     const result = await axios.post("/taxation/filter", {}, { params });
     return result?.data;
@@ -14,16 +17,38 @@ export const taxApi = {
     return result?.data;
   },
   create: async (userId: string, data: ITaxationPayload) => {
-    const result = await axios.post(`/taxation/create`, data, {
+    const newInputs = {
+      ...data,
+      applicableToLocations: data.applicableToLocations.map(
+        (item) => item?.uuid
+      ),
+      applicableToBrackets: data.applicableToBrackets.map((item) => item?.uuid),
+      applicableToProductServices: data.applicableToProductServices.map(
+        (item) => item?.uuid
+      ),
+      applicableToBreaks: data.applicableToBreaks.map((item) => item?.uuid),
+    };
+    const result = await axios.post(`/taxation/create`, newInputs, {
       params: { userId },
     });
     return result?.data;
   },
   update: async (taxId: string, userId: string, data: ITaxationPayload) => {
+    const newInputs = {
+      ...data,
+      applicableToLocations: data.applicableToLocations.map(
+        (item) => item?.uuid
+      ),
+      applicableToBrackets: data.applicableToBrackets.map((item) => item?.uuid),
+      applicableToProductServices: data.applicableToProductServices.map(
+        (item) => item?.uuid
+      ),
+      applicableToBreaks: data.applicableToBreaks.map((item) => item?.uuid),
+    };
     const params = {
       userId,
     };
-    const result = await axios.put(`/taxation/${taxId}`, data, { params });
+    const result = await axios.put(`/taxation/${taxId}`, newInputs, { params });
     return result?.data;
   },
   delete: async (taxId: string) => {

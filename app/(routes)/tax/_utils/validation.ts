@@ -8,20 +8,27 @@ export const taxationSchema = yup.object().shape({
     .oneOf(["percentage", "flat"])
     .required("Rate type is required"),
   taxRate: yup.number().required("Tax rate is required"),
-  flateRate: yup.number().required("Flat rate is required"),
+  flatRate: yup.number(),
+
   applicableToLocations: yup
-    .string()
+    .array()
+    .of(yup.object().shape({ uuid: yup.string().uuid("Invalid UUID") }))
     .required("Applicable locations are required"),
   applicableToBrackets: yup
-    .string()
+    .array()
+    .of(yup.object().shape({ uuid: yup.string().uuid("Invalid UUID") }))
     .required("Applicable brackets are required"),
-  applicableToProductService: yup
-    .string()
-    .required("Applicable product/service is required"),
-  applicableToBreaks: yup.string().required("Applicable breaks are required"),
+  applicableToBreaks: yup
+    .array()
+    .of(yup.object().shape({ uuid: yup.string().uuid("Invalid UUID") }))
+    .required("Applicable breaks are required"),
+  applicableToProductServices: yup
+    .array()
+    .of(yup.object().shape({ uuid: yup.string().uuid("Invalid UUID") }))
+    .required("Applicable product/services are required"),
+
   validityStartDate: yup.date().required("Validity start date is required"),
-  validityEndDate: yup.date().required("Validity end date is required"),
-  type: yup.string().oneOf(["product", "service"]).required("Type is required"),
+  validityEndDate: yup.date(),
 });
 
 export type ITaxationPayload = yup.InferType<typeof taxationSchema>;

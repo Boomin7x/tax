@@ -9,7 +9,7 @@ const useCreateTaxation = (userId: string) => {
     mutationFn: (data: ITaxationPayload) => taxApi.create(userId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["all-taxationsa"],
+        queryKey: ["all-taxations"],
       });
     },
   });

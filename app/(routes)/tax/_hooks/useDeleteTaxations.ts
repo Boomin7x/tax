@@ -8,7 +8,7 @@ const useDeleteTaxations = () => {
     mutationFn: taxApi.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["all-taxationsa"],
+        queryKey: ["all-taxations"],
       });
     },
   });

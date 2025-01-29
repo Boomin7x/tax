@@ -22,12 +22,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { isAxiosError } from "axios";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { v4 } from "uuid";
-import { ISheet } from "../../types";
-import { IProduct } from "../_utils/types";
-import { IProductPayload, productSchema } from "../_utils/validation";
 import useGetAllIndustry from "../../industry/_hooks/useGetAllIndustry";
 import { IIndustry } from "../../industry/_utils/types";
+import { ISheet } from "../../types";
 import useUpdateProduct from "../_hooks/useUpdateProduct";
+import { IProduct } from "../_utils/types";
+import { IProductPayload, productSchema } from "../_utils/validation";
 
 const CreateProductModal: React.FC<ISheet<IProduct>> = ({
   isOpen,
@@ -114,7 +114,7 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
       );
       form.setValue("name", newData?.name);
     }
-  }, [isOpen, newData]);
+  }, [isOpen, newData, industryData]);
 
   console.log({ data: form.watch(), newData });
 
@@ -171,7 +171,7 @@ const CreateProductModal: React.FC<ISheet<IProduct>> = ({
                 <SelectInput
                   isRequired
                   label="Industry"
-                  onBlur={field.onBlur}
+                  {...field}
                   error={form.formState.errors?.industryId}
                   onValueChange={(value) => form.setValue("industryId", value)}
                   options={industryOptions}

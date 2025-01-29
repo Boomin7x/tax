@@ -19,6 +19,7 @@ interface ISelectInput extends React.ComponentProps<typeof SelectContent> {
   onValueChange?: (value: string) => void;
   placeholder?: string;
   options?: { value: string; inputDisplay: ReactNode }[];
+  value?: string;
 }
 
 const SelectInput: FC<ISelectInput> = ({
@@ -30,6 +31,7 @@ const SelectInput: FC<ISelectInput> = ({
   error,
   onValueChange,
   options,
+  value,
   ...rest
 }) => {
   return (
@@ -47,7 +49,7 @@ const SelectInput: FC<ISelectInput> = ({
             {leftIcon}
           </div>
         ) : null}
-        <Select onValueChange={onValueChange}>
+        <Select value={value} onValueChange={onValueChange}>
           <SelectTrigger
             className={cn(
               "rounded-[0.3px] h-[55px]",

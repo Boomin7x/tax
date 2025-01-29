@@ -8,6 +8,7 @@ interface ITextInput extends React.ComponentProps<typeof Input> {
   label?: string;
   leftIcon?: ReactNode;
   error?: FieldError;
+  actions?: ReactNode;
 }
 
 const TextInput: FC<ITextInput> = ({
@@ -16,15 +17,19 @@ const TextInput: FC<ITextInput> = ({
   leftIcon,
   label,
   error,
+  actions,
   ...rest
 }) => {
   return (
     <div className="w-full">
       {!!label && (
-        <p className="capitalize font-semibold">
-          {label}{" "}
-          {isRequired && <span className="text-red-400 font-bold">*</span>}
-        </p>
+        <div className="flex flex-col ">
+          <p className="capitalize font-semibold">
+            {label}{" "}
+            {isRequired && <span className="text-red-400 font-bold">*</span>}
+          </p>
+          {actions}
+        </div>
       )}
 
       <div className="relative">

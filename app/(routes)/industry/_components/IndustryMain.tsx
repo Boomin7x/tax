@@ -15,11 +15,14 @@ import useDeleteIndustry from "../_hooks/useDeleteIndustry";
 import useMessage from "@/hooks/useMessage";
 import { isAxiosError } from "axios";
 import Pagination, { IPagination } from "@/components/pagination";
+import { RotateCcw, SearchIcon } from "lucide-react";
+import TextInput from "@/components/TextInput";
 
 const IndustryMain = () => {
   const { handleTitle } = useStore();
   const [page, setPage] = useState(1);
-  const { data } = useGetAllIndustry({
+  const [search, setSearch] = useState("");
+  const { data, isLoading } = useGetAllIndustry({
     page: page,
     limit: 10,
   });
@@ -72,18 +75,42 @@ const IndustryMain = () => {
     totalItems: industryPagination?.totalItems,
     align: "end",
   };
+  const onReset = () => {
+    setPage(1);
+    setSearch("");
+  };
 
   useEffect(() => {
     handleTitle("Industry");
   }, []);
 
   return (
-    <div className="flex flex-col p-8">
-      <Button
-        onClick={() => setCreateModal((prev) => ({ ...prev, isopen: true }))}
-      >
-        + create
-      </Button>
+    <div className="flex flex-col gap-2 p-8">
+      <h4 className="text-2xl"> List</h4>
+      <div className="flex items-center gap-2">
+        <p>Total items - {industryPagination?.totalItems ?? 0}</p>|{" "}
+        <Button className="gap-2" variant="link" onClick={onReset}>
+          <RotateCcw className="w-4 h-4" />
+          Reset
+        </Button>
+      </div>
+      <div className="flex items-center justify-between ">
+        <div className="w-1/3">
+          <TextInput
+            leftIcon={<SearchIcon className="w-4 h-4" />}
+            className="pl-11"
+            value={search}
+            placeholder="Search all taxes"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <Button
+          onClick={() => setCreateModal((prev) => ({ ...prev, isopen: true }))}
+        >
+          + create
+        </Button>
+      </div>
+
       <DataTable
         columns={industryColumn({
           onDelete: (data) => setDeleteModal({ id: data?.uuid, open: true }),
@@ -91,6 +118,7 @@ const IndustryMain = () => {
           onEdit: (data) => setCreateModal({ isopen: true, data }),
         })}
         data={industryData ?? []}
+        isLoading={isLoading}
       />
       <div className="my-4 ">
         <Pagination {...paginationProps} />

@@ -78,7 +78,7 @@ export const DataTable = <TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {!isLoading ? (
+          {isLoading ? (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center ">
                 <div className=" flex aspect-[4/1] items-center justify-center">

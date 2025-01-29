@@ -15,6 +15,8 @@ import DeleteDailog, { IDeleteDailog } from "@/components/deleteDailog";
 import useMessage from "@/hooks/useMessage";
 import { isAxiosError } from "axios";
 import Pagination, { IPagination } from "@/components/pagination";
+import { RotateCcw, SearchIcon } from "lucide-react";
+import TextInput from "@/components/TextInput";
 
 const TaxBracketMain = () => {
   const { handleTitle } = useStore();
@@ -25,7 +27,8 @@ const TaxBracketMain = () => {
   const message = useMessage();
   const { mutate, isPending } = useDeleteTaxBracket();
   const [page, setPage] = useState(1);
-  const { data } = useGetAllTaxtBracket({ page, limit: 10 });
+  const [search, setSearch] = useState("");
+  const { data, isLoading } = useGetAllTaxtBracket({ page, limit: 10 });
   const texBracketData = data?.data as ITaxBracket[];
   const taxBracketPagination = data?.meta as Imeta;
 
@@ -72,11 +75,38 @@ const TaxBracketMain = () => {
     align: "end",
   };
 
+  const onReset = () => {
+    setPage(1);
+    setSearch("");
+  };
+
   return (
     <div className="flex flex-col p-8">
-      <Button onClick={() => setCreateModal({ data: undefined, isopen: true })}>
-        + create
-      </Button>
+      <h4 className="text-2xl"> List</h4>
+      <div className="flex items-center gap-2">
+        <p>Total items - {taxBracketPagination?.totalItems ?? 0}</p>|{" "}
+        <Button className="gap-2" variant="link" onClick={onReset}>
+          <RotateCcw className="w-4 h-4" />
+          Reset
+        </Button>
+      </div>
+      <div className="flex items-center justify-between ">
+        <div className="w-1/3">
+          <TextInput
+            leftIcon={<SearchIcon className="w-4 h-4" />}
+            className="pl-11"
+            value={search}
+            placeholder="Search all taxes"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <Button
+          onClick={() => setCreateModal({ data: undefined, isopen: true })}
+        >
+          + create
+        </Button>
+      </div>
+
       <DataTable
         columns={taxtBracketColumn({
           onDelete: (data) => setDeleteModal({ open: true, id: data?.uuid }),
@@ -84,6 +114,7 @@ const TaxBracketMain = () => {
           onEdit: (data) => setCreateModal({ isopen: true, data }),
         })}
         data={texBracketData ?? []}
+        isLoading={isLoading}
       />
       <div className="my-4 ">
         <Pagination {...paginationProps} />

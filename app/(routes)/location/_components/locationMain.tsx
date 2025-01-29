@@ -14,6 +14,8 @@ import CreateLocationModal from "./createLocationModal";
 import LocationDetailsSheet from "./locationDetailsSheet";
 import Pagination, { IPagination } from "@/components/pagination";
 import useStore from "@/app/store/useStore";
+import { RotateCcw, SearchIcon } from "lucide-react";
+import TextInput from "@/components/TextInput";
 
 const LocationMain = () => {
   const { handleTitle } = useStore();
@@ -23,7 +25,8 @@ const LocationMain = () => {
   const message = useMessage();
   const { mutate, isPending } = useDeleteLocation();
   const [page, setPage] = useState(1);
-  const { data } = useGetAllLocation({ page, limit: 10 });
+  const [search, setSearch] = useState("");
+  const { data, isLoading } = useGetAllLocation({ page, limit: 10 });
   const locationData = data?.data as ILocation[];
   const locationMeta = data?.meta as Imeta;
 
@@ -67,12 +70,38 @@ const LocationMain = () => {
     totalItems: locationMeta?.totalItems,
     align: "end",
   };
+  const onReset = () => {
+    setPage(1);
+    setSearch("");
+  };
 
   return (
     <div className="flex flex-col p-8">
-      <Button onClick={() => setCreateModal({ data: undefined, isopen: true })}>
-        + create
-      </Button>
+      <h4 className="text-2xl"> List</h4>
+      <div className="flex items-center gap-2">
+        <p>Total items - {locationMeta?.totalItems ?? 0}</p>|{" "}
+        <Button className="gap-2" variant="link" onClick={onReset}>
+          <RotateCcw className="w-4 h-4" />
+          Reset
+        </Button>
+      </div>
+      <div className="flex items-center justify-between ">
+        <div className="w-1/3">
+          <TextInput
+            leftIcon={<SearchIcon className="w-4 h-4" />}
+            className="pl-11"
+            value={search}
+            placeholder="Search all taxes"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <Button
+          onClick={() => setCreateModal({ data: undefined, isopen: true })}
+        >
+          + create
+        </Button>
+      </div>
+
       <DataTable
         columns={locationColumn({
           onDelete: (data) => setDeleteModal({ id: data?.uuid, open: true }),
@@ -80,6 +109,7 @@ const LocationMain = () => {
           onEdit: (data) => setCreateModal({ isopen: true, data }),
         })}
         data={locationData ?? []}
+        isLoading={isLoading}
       />
       <div className="my-4 ">
         <Pagination {...paginationProps} />
