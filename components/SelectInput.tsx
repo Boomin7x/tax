@@ -56,7 +56,7 @@ const SelectInput: FC<ISelectInput> = ({
             className={cn(
               "rounded-[0.3px] h-[55px]",
               className,
-              error && "outline-red-500 border-red-500"
+              error && "outline-red-500 border-red-500 yes"
             )}
           >
             <SelectValue placeholder={placeholder} />
