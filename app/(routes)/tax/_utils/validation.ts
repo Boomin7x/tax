@@ -13,21 +13,24 @@ export const taxationSchema = yup.object().shape({
   applicableToLocations: yup
     .array()
     .of(yup.object().shape({ uuid: yup.string() })),
-    // .required("Applicable locations are required"),
+  // .required("Applicable locations are required"),
   applicableToBrackets: yup
     .array()
-    .of(yup.object().shape({ uuid: yup.string()})),
-    // .required("Applicable brackets are required"),
+    .of(yup.object().shape({ uuid: yup.string() })),
+  // .required("Applicable brackets are required"),
   applicableToBreaks: yup
     .array()
-    .of(yup.object().shape({ uuid: yup.string()})),
-    // .required("Applicable breaks are required"),
+    .of(yup.object().shape({ uuid: yup.string() })),
+  // .required("Applicable breaks are required"),
   applicableToProductServices: yup
     .array()
     .of(yup.object().shape({ uuid: yup.string() })),
-    // .required("Applicable product/services are required"),
+  // .required("Applicable product/services are required"),
 
-  validityStartDate: yup.date().typeError(`Validity start date is required`).required("Validity start date is required"),
+  validityStartDate: yup
+    .date()
+    .typeError(`Validity start date is required`)
+    .required("Validity start date is required"),
   validityEndDate: yup.date().typeError(`Validity end date is not valid`),
 });
 
