@@ -20,6 +20,7 @@ interface ISelectInput extends React.ComponentProps<typeof SelectContent> {
   placeholder?: string;
   options?: { value: string; inputDisplay: ReactNode }[];
   value?: string;
+  disabled?: boolean;
 }
 
 const SelectInput: FC<ISelectInput> = ({
@@ -32,6 +33,7 @@ const SelectInput: FC<ISelectInput> = ({
   onValueChange,
   options,
   value,
+  disabled,
   ...rest
 }) => {
   return (
@@ -49,7 +51,7 @@ const SelectInput: FC<ISelectInput> = ({
             {leftIcon}
           </div>
         ) : null}
-        <Select value={value} onValueChange={onValueChange}>
+        <Select disabled={disabled} value={value} onValueChange={onValueChange}>
           <SelectTrigger
             className={cn(
               "rounded-[0.3px] h-[55px]",

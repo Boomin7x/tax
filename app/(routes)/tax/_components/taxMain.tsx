@@ -39,8 +39,8 @@ const TaxMain = () => {
   const deleteFn = (id: string) => {
     mutate(id, {
       onSuccess: () => {
-        message({ message: "Taxation deleted", status: "success" });
         setDeleteModal(undefined);
+        message({ message: "Taxation deleted", status: "success" });
       },
       onError: (error) => {
         if (isAxiosError(error))
@@ -64,16 +64,16 @@ const TaxMain = () => {
   };
   const deletModalProps: IDeleteDailog = {
     action: deleteFn,
-    desc: "This will delete the taxation, and this process is irreversible",
     isLoading: isPending,
-    onClose: () => setDeleteModal(undefined),
     open: deleteModal as IDeleteModalState,
+    onClose: () => setDeleteModal(undefined),
+    desc: "This will delete the taxation, and this process is irreversible",
   };
   const paginationProps: IPagination = {
-    itemsPerPage: taxationMeta?.itemsPerPage,
-    onPageChange: (page) => setPage(page),
-    totalItems: taxationMeta?.totalItems,
     align: "end",
+    totalItems: taxationMeta?.totalItems,
+    onPageChange: (page) => setPage(page),
+    itemsPerPage: taxationMeta?.itemsPerPage,
   };
   const onReset = () => {
     setPage(1);

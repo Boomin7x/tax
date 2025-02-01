@@ -19,14 +19,22 @@ export const taxApi = {
   create: async (userId: string, data: ITaxationPayload) => {
     const newInputs = {
       ...data,
-      applicableToLocations: data.applicableToLocations.map(
+      applicableToLocations: data?.applicableToLocations
+      ?.filter(items => items?.uuid !== "")
+      ?.map(
         (item) => item?.uuid
       ),
-      applicableToBrackets: data.applicableToBrackets.map((item) => item?.uuid),
-      applicableToProductServices: data.applicableToProductServices.map(
+      applicableToBrackets: data?.applicableToBrackets
+      ?.filter(items => items?.uuid !== "")
+      ?.map((item) => item?.uuid),
+      applicableToProductServices: data?.applicableToProductServices
+      ?.filter(items => items?.uuid !== "")
+      ?.map(
         (item) => item?.uuid
       ),
-      applicableToBreaks: data.applicableToBreaks.map((item) => item?.uuid),
+      applicableToBreaks: data?.applicableToBreaks
+      ?.filter(items => items?.uuid !== "")
+      ?.map((item) => item?.uuid),
     };
     const result = await axios.post(`/taxation/create`, newInputs, {
       params: { userId },
@@ -36,14 +44,14 @@ export const taxApi = {
   update: async (taxId: string, userId: string, data: ITaxationPayload) => {
     const newInputs = {
       ...data,
-      applicableToLocations: data.applicableToLocations.map(
+      applicableToLocations: data?.applicableToLocations?.map(
         (item) => item?.uuid
       ),
-      applicableToBrackets: data.applicableToBrackets.map((item) => item?.uuid),
-      applicableToProductServices: data.applicableToProductServices.map(
+      applicableToBrackets: data?.applicableToBrackets?.map((item) => item?.uuid),
+      applicableToProductServices: data?.applicableToProductServices?.map(
         (item) => item?.uuid
       ),
-      applicableToBreaks: data.applicableToBreaks.map((item) => item?.uuid),
+      applicableToBreaks: data?.applicableToBreaks?.map((item) => item?.uuid),
     };
     const params = {
       userId,

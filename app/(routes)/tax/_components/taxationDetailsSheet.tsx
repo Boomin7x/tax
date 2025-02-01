@@ -1,4 +1,4 @@
-import React from "react";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -7,11 +7,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { ITaxations } from "../_utils/types";
-import { ISheet } from "../../types";
-import { Button } from "@/components/ui/button";
-import { filterOut } from "../../utils";
+import { ReactNode } from "react";
 import { v4 } from "uuid";
+import { ISheet } from "../../types";
+import { ITaxations } from "../_utils/types";
 
 const TaxationDetailsSheet = ({
   isOpen,
@@ -19,6 +18,83 @@ const TaxationDetailsSheet = ({
   data,
 }: ISheet<ITaxations>) => {
   const newData = data as ITaxations;
+  const displayData: { title: keyof ITaxations; value: ReactNode }[] = [
+    { title: "name", value: newData?.name ?? "N/A" },
+    { title: "rateType", value: newData?.rateType ?? "N/A" },
+    { title: "taxCode", value: newData?.taxCode ?? "N/A" },
+    { title: "flatRate", value: newData?.flatRate ?? "N/A" },
+    { title: "taxId", value: newData?.taxId ?? "N/A" },
+    {
+      title: "validityStartDate",
+      value: newData?.validityStartDate
+        ? new Date(newData?.validityStartDate).toLocaleString()
+        : "N/A",
+    },
+    {
+      title: "validityEndDate",
+      value: newData?.validityEndDate
+        ? new Date(newData?.validityEndDate).toLocaleString()
+        : "N/A",
+    },
+  ];
+  const displayArray = [
+    {
+      title: "Tax bracket code",
+      value: (
+        <ul>
+          {newData?.applicableToBrackets.length
+            ? newData?.applicableToBrackets?.map((items) => (
+                <li className="list-disc" key={v4()}>
+                  {items?.taxBracketCode}
+                </li>
+              ))
+            : "N/A"}
+        </ul>
+      ),
+    },
+    {
+      title: "Tax break name",
+      value: (
+        <ul>
+          {newData?.applicableToBreaks?.length
+            ? newData?.applicableToBreaks?.map((items) => (
+                <li className="list-disc" key={v4()}>
+                  {items?.name}
+                </li>
+              ))
+            : "N/A"}
+        </ul>
+      ),
+    },
+    {
+      title: "Locations name",
+      value: (
+        <ul>
+          {newData?.applicableToLocations?.length
+            ? newData?.applicableToLocations?.map((items) => (
+                <li className="list-disc" key={v4()}>
+                  {items?.name}
+                </li>
+              ))
+            : "N/A"}
+        </ul>
+      ),
+    },
+    {
+      title: "Products / services name",
+      value: (
+        <ul>
+          {newData?.applicableToProductService?.length
+            ? newData?.applicableToProductService?.map((items) => (
+                <li className="list-disc" key={v4()}>
+                  {items?.name}
+                </li>
+              ))
+            : "N/A"}
+        </ul>
+      ),
+    },
+  ];
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="min-w-[30vw] flex flex-col">
@@ -31,29 +107,19 @@ const TaxationDetailsSheet = ({
             or exemptions)
           </SheetDescription>
         </SheetHeader>
-        <div className="flex flex-col gap-5 flex-grow  py-6 overflow-auto">
-          {Object.keys(newData)
-            .filter((a) => filterOut(a))
-            .map((items) => (
-              <div key={v4()}>
-                <p className="text-sm font-semibold capitalize">
-                  {items.replace(/([A-Z])/g, " $1").trim()}
-                </p>
-                <p>
-                  {typeof newData[items as keyof typeof newData] === "boolean"
-                    ? newData[items as keyof typeof newData]
-                      ? "Yes"
-                      : "No"
-                    : new Date(
-                        String(newData[items as keyof typeof newData])
-                      ).toString() !== "Invalid Date"
-                    ? new Date(
-                        String(newData[items as keyof typeof newData])
-                      ).toLocaleString() // This will include both date and time
-                    : newData[items as keyof typeof newData] ?? "N/A"}
-                </p>
-              </div>
-            ))}
+        <div className="grid grid-cols-2 gap-5 flex-grow  py-6 overflow-auto">
+          {displayData?.map((items) => (
+            <div key={v4()}>
+              <p className="text-sm font-semibold capitalize">{items?.title}</p>
+              <p>{items?.value}</p>
+            </div>
+          ))}
+          {displayArray?.map((items) => (
+            <div key={v4()}>
+              <p className="text-sm font-semibold capitalize">{items?.title}</p>
+              <p className="pl-3">{items?.value}</p>
+            </div>
+          ))}
         </div>
         <SheetFooter>
           <Button onClick={onClose}>Close</Button>

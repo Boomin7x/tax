@@ -3,13 +3,8 @@
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import TextInput from "./TextInput";
 import { cn } from "@/lib/utils";
+import TextInput from "./TextInput";
 
 type Status = {
   value: string;
@@ -40,21 +35,21 @@ const statuses: Status[] = [
 ];
 
 export function ComboboxPopover() {
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
   const [selectedStatus, setSelectedStatus] = React.useState<Status | null>(
     null
   );
-  const [text, setText] = React.useState<string[]>();
+  // const [text, setText] = React.useState<string[]>();
   const [array, setArray] = React.useState<Status[]>();
   React.useEffect(() => {
     setArray(statuses);
   }, [statuses]);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const isPositive = e.target.value.toLowerCase().startsWith("+");
-    const isNegative = e.target.value.toLowerCase().startsWith("-");
+    // const isPositive = e.target.value.toLowerCase().startsWith("+");
+    // const isNegative = e.target.value.toLowerCase().startsWith("-");
 
-    setText(e.target.value.toLowerCase().split(","));
+    // setText(e.target.value.toLowerCase().split(","));
 
     setArray(
       statuses?.filter((items) =>
@@ -68,9 +63,9 @@ export function ComboboxPopover() {
   console.log({ selectedStatus });
 
   const ref = useOutsideClick(() => setOpenOptions(false));
-  const onSelect = (status: Status) => {
-    setSelectedStatus(status);
-  };
+  // const onSelect = (status: Status) => {
+  //   setSelectedStatus(status);
+  // };
 
   const [openOptions, setOpenOptions] = React.useState(false);
 
