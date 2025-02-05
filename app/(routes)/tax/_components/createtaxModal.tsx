@@ -37,6 +37,7 @@ import useGetAllTaxBreak from "../../tax-break/_hooks/useGetAllTaxBreak";
 import useCreateTaxation from "../_hooks/useCreateTaxation";
 import useUpdateTaxations from "../_hooks/useUpdateTaxations";
 import { ITaxations } from "../_utils/types";
+import ChipSelect from "./ChipSelect";
 
 export type ICreatetaxModal = IModal;
 const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
@@ -192,6 +193,11 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
       inputDisplay: items?.name,
       value: items?.uuid,
     })) ?? [];
+
+  const prodOpt2 = prodOptions?.map((items) => ({
+    value: items?.value,
+    label: items?.inputDisplay,
+  }));
 
   const onSubmit: SubmitHandler<ITaxationPayload> = (inputs) => {
     const inputData = {
@@ -600,6 +606,7 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
                   </div>
                 ))}
               </div>
+              <ChipSelect options={prodOpt2} className="rounded-none" style />
             </div>
           </div>
           <DialogFooter>

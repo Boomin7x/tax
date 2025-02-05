@@ -1,0 +1,3 @@
+.custom-select-container{
+    @apply border-red-200 text-red-50
+}
