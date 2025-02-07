@@ -16,14 +16,14 @@ const ChipSelect: FC<IChipSelect> = ({ options, error, ...rest }) => {
       className="custom-select-container" // Add your custom class name here
       classNamePrefix="custom-select" // Add your custom class prefix here
       styles={{
-        indicatorsContainer(base, props) {
+        indicatorsContainer(base) {
           return {
             ...base,
             display: "flex",
             justifyContent: "flex-end",
           };
         },
-        container(base, state) {
+        container(base) {
           return {
             ...base,
             outline: "none",
@@ -36,7 +36,7 @@ const ChipSelect: FC<IChipSelect> = ({ options, error, ...rest }) => {
             },
           };
         },
-        input(base, props) {
+        input(base) {
           return {
             ...base,
             border: "0",
@@ -49,7 +49,7 @@ const ChipSelect: FC<IChipSelect> = ({ options, error, ...rest }) => {
             },
           };
         },
-        control(base, props) {
+        control(base) {
           return {
             ...base,
             height: "55px",

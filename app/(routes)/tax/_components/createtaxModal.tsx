@@ -11,12 +11,7 @@ import React, { FC, useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Controller,
-  SubmitHandler,
-  useFieldArray,
-  useForm,
-} from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { IModal, ISheet } from "../../types";
 import { ITaxationPayload, taxationSchema } from "../_utils/validation";
