@@ -1,3 +1,21 @@
-.custom-select-container{
-    @apply border-red-200 text-red-50
+.custom-select-container .custom-select__control {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.custom-select-container .custom-select__control:focus,
+.custom-select-container .custom-select__control--is-focused {
+    border: none !important;
+    outline: 2px solid black !important;
+    /* Ensure the outline is black */
+    box-shadow: none !important;
+}
+
+.css-1k7q0a1-control,
+.css-1k7q0a1-control:hover,
+.css-1k7q0a1-control:focus {
+    border: 1px solid rgb(211, 211, 211) !important;
+    outline: 1px solid black !important;
+    box-shadow: none !important;
 }

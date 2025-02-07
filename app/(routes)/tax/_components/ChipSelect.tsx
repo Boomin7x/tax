@@ -1,13 +1,13 @@
 import React, { FC } from "react";
 import Select from "react-select";
 import "./style.css";
-import { appRouterContext } from "next/dist/server/route-modules/app-route/shared-modules";
 
 export type IChipSelect = React.ComponentProps<typeof Select> & {
   options: { value: string; label: string }[];
+  error?: string;
 };
 
-const ChipSelect: FC<IChipSelect> = ({ options, ...rest }) => {
+const ChipSelect: FC<IChipSelect> = ({ options, error, ...rest }) => {
   return (
     <Select
       isMulti
@@ -54,6 +54,7 @@ const ChipSelect: FC<IChipSelect> = ({ options, ...rest }) => {
             ...base,
             height: "55px",
             outline: "none",
+            border: !!error ? "1px solid red" : "1px solid lightGray",
             boxShadow: "none",
             borderRadius: "0.3px",
             ":focus": {

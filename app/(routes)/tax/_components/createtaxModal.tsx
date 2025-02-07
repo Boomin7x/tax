@@ -17,7 +17,7 @@ import {
   useFieldArray,
   useForm,
 } from "react-hook-form";
-import { v4 as uuidv4, v4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import { IModal, ISheet } from "../../types";
 import { ITaxationPayload, taxationSchema } from "../_utils/validation";
 
@@ -25,11 +25,9 @@ import CustomButton from "@/components/CustomButton";
 import SelectInput from "@/components/SelectInput";
 import TextAreaInput from "@/components/TextAreaInput";
 import TextInput from "@/components/TextInput";
-import { Separator } from "@/components/ui/separator";
 import useMessage from "@/hooks/useMessage";
 import { cn } from "@/lib/utils";
 import { isAxiosError } from "axios";
-import { MinusIcon } from "lucide-react";
 import useGetAllProduct from "../../goods-and-services/_hooks/useGetAllProduct";
 import useGetAllLocation from "../../location/_hooks/useGetAllLocation";
 import useGetAllTaxtBracket from "../../tax-bracket/_hooks/useGetAllTaxtBracket";
@@ -49,12 +47,6 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
   const form = useForm<ITaxationPayload>({
     mode: "onChange",
     resolver: yupResolver(taxationSchema),
-    defaultValues: {
-      applicableToLocations: [{ uuid: "" }],
-      applicableToBrackets: [{ uuid: "" }],
-      applicableToProductServices: [{ uuid: "" }],
-      applicableToBreaks: [{ uuid: "" }],
-    },
   });
 
   const message = useMessage();
@@ -68,16 +60,28 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
   useEffect(() => {
     if (!!newData) {
       newData?.applicableToBrackets?.forEach((items, i) => {
-        form.setValue(`applicableToBrackets.${i}.uuid`, items?.uuid);
+        form.setValue(`applicableToBrackets.${i}`, {
+          value: items?.uuid,
+          label: "+ " + items?.taxBracketCode,
+        });
       });
       newData?.applicableToLocations?.forEach((items, i) => {
-        form.setValue(`applicableToLocations.${i}.uuid`, items?.uuid);
+        form.setValue(`applicableToLocations.${i}`, {
+          value: items?.uuid,
+          label: "+ " + items?.name,
+        });
       });
       newData?.applicableToBreaks?.forEach((items, i) => {
-        form.setValue(`applicableToBreaks.${i}.uuid`, items?.uuid);
+        form.setValue(`applicableToBreaks.${i}`, {
+          value: items?.uuid,
+          label: "+ " + items?.name,
+        });
       });
       newData?.applicableToProductService?.forEach((items, i) => {
-        form.setValue(`applicableToProductServices.${i}.uuid`, items?.uuid);
+        form.setValue(`applicableToProductServices.${i}`, {
+          value: items?.uuid,
+          label: "+ " + items?.name,
+        });
       });
 
       form.setValue("description", newData?.description);
@@ -102,41 +106,6 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
     }
   }, [isOpen, newData]);
 
-  console.log({
-    error: form.formState.errors,
-    valid: form.formState.isValid,
-    newData,
-    data: form.watch(),
-    date: new Date(newData?.validityEndDate as string),
-  });
-
-  const {
-    fields: locationFields,
-    append: locationsAppend,
-    remove: locationRemove,
-  } = useFieldArray<ITaxationPayload>({
-    control: form.control,
-    name: "applicableToLocations",
-  });
-
-  const {
-    fields: bracketFields,
-    append: bracketAppend,
-    remove: bracketRemove,
-  } = useFieldArray<ITaxationPayload>({
-    control: form.control,
-    name: "applicableToBrackets" as never,
-  });
-
-  const {
-    fields: productFields,
-    append: productAppend,
-    remove: productRemove,
-  } = useFieldArray<ITaxationPayload>({
-    control: form.control,
-    name: "applicableToProductServices" as never,
-  });
-
   const [
     applicableToLocationsIncludeOrExclude,
     setApplicableToLocationsIncludeOrExclude,
@@ -156,48 +125,86 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
     setapplicableToProductServicesInCludesOrExcludes,
   ] = useState<boolean>();
 
-  const {
-    fields: applicableToBreaks,
-    append: breakAppend,
-    remove: breaksRemove,
-  } = useFieldArray<ITaxationPayload>({
-    control: form.control,
-    name: "applicableToLocations",
-  });
+  // const prodOptions =
+  //   prodData?.data?.map((item) => ({
+  //     value: item.uuid,
+  //     label: item.name,
+  //   })) ?? [];
 
-  const { data: locationData } = useGetAllLocation({ page: 1, limit: 100 });
-  const { data: bracketData } = useGetAllTaxtBracket({ page: 1, limit: 100 });
-  const { data: breakData } = useGetAllTaxBreak({ page: 1, limit: 100 });
-  const { data: prodData } = useGetAllProduct({ page: 1, limit: 100 });
+  // const locationOptions = locationData?.data?.map((item) => ({
+  //   value: item.uuid,
+  //   label: item.name,
+  // })) ?? [];
+
+  // const bracketOptions = bracketData?.data?.map((item) => ({
+  //   value: item.uuid,
+  //   label: item.taxBracketCode,
+  // })) ?? [];
+
+  // const breakOptions = breakData?.data?.map((item) => ({
+  //   value: item.uuid,
+  //   label: item.name,
+  // })) ?? [];
+
+  // const fakeData = [
+  //   { value: "1", label: "Option 1" },
+  //   { value: "2", label: "Option 2" },
+  //   { value: "3", label: "Option 3" },
+  //   { value: "4", label: "Option 4" },
+  // ];
+
+  const { data: locationData } = useGetAllLocation({ limit: 100, page: 1 });
+  const { data: prodData } = useGetAllProduct({ limit: 100, page: 1 });
+  const { data: breakData } = useGetAllTaxBreak({ limit: 100, page: 1 });
+  const { data: bracketData } = useGetAllTaxtBracket({ limit: 100, page: 1 });
+
+  const prodOptions =
+    prodData?.data?.map((items) => ({
+      value: items?.uuid,
+      label: `${
+        typeof applicableToProductServicesIncludesOrExcludes === "boolean"
+          ? applicableToProductServicesIncludesOrExcludes
+            ? "+ "
+            : "- "
+          : ""
+      }${items?.name}`,
+    })) ?? [];
 
   const locationOptions =
     locationData?.data?.map((items) => ({
-      inputDisplay: items?.name,
       value: items?.uuid,
+      label: `${
+        typeof applicableToLocationsIncludeOrExclude === "boolean"
+          ? applicableToLocationsIncludeOrExclude
+            ? "+ "
+            : "- "
+          : ""
+      }${items?.name}`,
     })) ?? [];
 
   const bracketOptions =
     bracketData?.data?.map((items) => ({
-      inputDisplay: items?.taxBracketCode,
       value: items?.uuid,
+      label: `${
+        typeof applicableToBracketsIcludeOrExclude === "boolean"
+          ? applicableToBracketsIcludeOrExclude
+            ? "+ "
+            : "- "
+          : ""
+      }${items?.taxBracketCode}`,
     })) ?? [];
 
   const breakOptions =
     breakData?.data?.map((items) => ({
-      inputDisplay: items?.name,
       value: items?.uuid,
+      label: `${
+        typeof applicableToBreaksIncludeOrExclude === "boolean"
+          ? applicableToBreaksIncludeOrExclude
+            ? "+ "
+            : "- "
+          : ""
+      }${items?.name}`,
     })) ?? [];
-
-  const prodOptions =
-    prodData?.data?.map((items) => ({
-      inputDisplay: items?.name,
-      value: items?.uuid,
-    })) ?? [];
-
-  const prodOpt2 = prodOptions?.map((items) => ({
-    value: items?.value,
-    label: items?.inputDisplay,
-  }));
 
   const onSubmit: SubmitHandler<ITaxationPayload> = (inputs) => {
     const inputData = {
@@ -209,7 +216,7 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
             applicableToBrackets: bracketOptions.filter(
               (item1) =>
                 !inputs?.applicableToBrackets?.some(
-                  (item2) => item2.uuid === item1.value
+                  (item2) => item2.value === item1.value
                 )
             ),
           }
@@ -221,7 +228,7 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
             applicableToBreaks: breakOptions.filter(
               (item1) =>
                 !inputs?.applicableToBreaks?.some(
-                  (item2) => item2.uuid === item1.value
+                  (item2) => item2.value === item1.value
                 )
             ),
           }
@@ -233,7 +240,7 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
             applicableToLocations: locationOptions.filter(
               (item1) =>
                 !inputs?.applicableToLocations?.some(
-                  (item2) => item2.uuid === item1.value
+                  (item2) => item2.value === item1.value
                 )
             ),
           }
@@ -245,7 +252,7 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
             applicableToProductServices: prodOptions?.filter(
               (item1) =>
                 !inputs?.applicableToProductServices?.some(
-                  (item2) => item2.uuid === item1.value
+                  (item2) => item2.value === item1.value
                 )
             ),
           }
@@ -279,7 +286,11 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
             });
         },
       });
+
+    console.log({ inputData });
   };
+
+  console.log({ objectvalues: form.watch() });
   return (
     <Dialog open={isOpen} onOpenChange={() => onClose()}>
       <DialogContent className="rounded-[0.3px] min-w-[85vw] ">
@@ -392,221 +403,129 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
               {/* <ComboboxPopover /> */}
             </div>
             <div className="grid grid-cols-4 h-fit gap-5 py-5 pb-7">
-              <div className="flex flex-col gap-3">
-                <SelectActions
-                  onAppend={() => locationsAppend({ uuid: "" })}
-                  onExclude={() => {
-                    setApplicableToLocationsIncludeOrExclude(false);
-                  }}
-                  onInclude={() =>
-                    setApplicableToLocationsIncludeOrExclude(true)
-                  }
-                  includeOrExclude={applicableToLocationsIncludeOrExclude}
-                />
-                {locationFields.map((_, i) => (
-                  <div key={v4()} className="flex items-end gap-2">
-                    <Controller
-                      name={`applicableToLocations.${i}.uuid`}
-                      control={form.control}
-                      render={({ field }) => (
-                        <SelectInput
-                          label={"applicable To Locations " + (1 + i)}
-                          isRequired
-                          disabled={
-                            applicableToLocationsIncludeOrExclude === undefined
-                          }
-                          onValueChange={(value) =>
-                            form.setValue(
-                              `applicableToLocations.${i}.uuid`,
-                              value
-                            )
-                          }
-                          placeholder={"applicable To Locations here ... "}
-                          error={
-                            form.formState.errors?.applicableToLocations?.[i]
-                              ?.uuid
-                          }
-                          defaultValue={form.getValues(
-                            `applicableToLocations.${i}.uuid`
-                          )}
-                          options={locationOptions}
-                          {...field}
-                        />
-                      )}
+              <Controller
+                name="applicableToBrackets"
+                control={form.control}
+                render={({ field }) => (
+                  <div className="flex flex-col">
+                    <p className="capitalize font-semibold">
+                      Applicable To Brackets
+                    </p>
+                    <ActionButtons
+                      boolean={applicableToBracketsIcludeOrExclude}
+                      setBoolean={setApplicableToBracketsIcludeOrExclude}
                     />
-                    {i > 0 ? (
-                      <Button
-                        onClick={() => locationRemove(i)}
-                        size="icon"
-                        className="h-10 w-10 "
-                      >
-                        <MinusIcon className="w-4 h-4" />
-                      </Button>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-              <div className="flex flex-col gap-3">
-                <SelectActions
-                  onAppend={() => bracketAppend({ uuid: "" })}
-                  onExclude={() => {
-                    setApplicableToBracketsIcludeOrExclude(false);
-                  }}
-                  onInclude={() => setApplicableToBracketsIcludeOrExclude(true)}
-                  includeOrExclude={applicableToBracketsIcludeOrExclude}
-                />
-                {bracketFields.map((_, i) => (
-                  <div key={v4()} className="flex items-end gap-2">
-                    <Controller
-                      name={`applicableToBrackets.${i}.uuid`}
-                      control={form.control}
-                      render={({ field }) => (
-                        <SelectInput
-                          onValueChange={(value) =>
-                            form.setValue(
-                              `applicableToBrackets.${i}.uuid`,
-                              value
-                            )
-                          }
-                          defaultValue={form.getValues(
-                            `applicableToBrackets.${i}.uuid`
-                          )}
-                          label={"applicable To Brackets " + (1 + i)}
-                          isRequired
-                          disabled={
-                            applicableToBracketsIcludeOrExclude === undefined
-                          }
-                          placeholder={"applicable To Brackets here ... "}
-                          error={
-                            form.formState.errors?.applicableToBrackets?.[i]
-                              ?.uuid
-                          }
-                          options={bracketOptions}
-                          {...field}
-                        />
-                      )}
+                    <ChipSelect
+                      {...field}
+                      error={
+                        form?.formState?.errors?.applicableToBrackets?.message
+                      }
+                      options={bracketOptions}
+                      className="rounded-none"
+                      isDisabled={
+                        applicableToBracketsIcludeOrExclude === undefined
+                      }
                     />
-                    {i > 0 ? (
-                      <Button
-                        onClick={() => bracketRemove(i)}
-                        size="icon"
-                        className="h-10 w-10 "
-                      >
-                        <MinusIcon className="w-4 h-4" />
-                      </Button>
-                    ) : null}
+                    <p className="text-sm text-red-600">
+                      {form?.formState?.errors?.applicableToBrackets?.message}
+                    </p>
                   </div>
-                ))}
-              </div>
-              <div className="flex flex-col gap-3">
-                <SelectActions
-                  onAppend={() => productAppend({ uuid: "" })}
-                  onExclude={() => {
-                    setapplicableToProductServicesInCludesOrExcludes(false);
-                  }}
-                  onInclude={() =>
-                    setapplicableToProductServicesInCludesOrExcludes(true)
-                  }
-                  includeOrExclude={
-                    applicableToProductServicesIncludesOrExcludes
-                  }
-                />
-                {productFields?.map((_, i) => (
-                  <div key={v4()} className="flex items-end gap-2">
-                    <Controller
-                      name={`applicableToProductServices.${i}.uuid`}
-                      control={form.control}
-                      render={({ field }) => (
-                        <SelectInput
-                          label={"applicable To Product / Service  " + (1 + i)}
-                          isRequired
-                          disabled={
-                            applicableToProductServicesIncludesOrExcludes ===
-                            undefined
-                          }
-                          options={prodOptions}
-                          placeholder={
-                            "applicable To Product / Service here ... "
-                          }
-                          onValueChange={(value) =>
-                            form.setValue(
-                              `applicableToProductServices.${i}.uuid`,
-                              value
-                            )
-                          }
-                          error={
-                            form.formState.errors
-                              ?.applicableToProductServices?.[i]?.uuid
-                          }
-                          {...field}
-                        />
-                      )}
+                )}
+              />
+              <Controller
+                name="applicableToLocations"
+                control={form.control}
+                render={({ field }) => (
+                  <div className="flex flex-col">
+                    <p className="capitalize font-semibold">
+                      Applicable To Locations
+                    </p>
+                    <ActionButtons
+                      boolean={applicableToLocationsIncludeOrExclude}
+                      setBoolean={setApplicableToLocationsIncludeOrExclude}
                     />
-                    {i > 0 ? (
-                      <Button
-                        onClick={() => productRemove(i)}
-                        size="icon"
-                        className="h-10 w-10 "
-                      >
-                        <MinusIcon className="w-4 h-4" />
-                      </Button>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-              <div className="flex flex-col gap-3">
-                <SelectActions
-                  onAppend={() => breakAppend({ uuid: "" })}
-                  onExclude={() => {
-                    setapplicableToBreaksIncludeOrExclude(false);
-                  }}
-                  onInclude={() => setapplicableToBreaksIncludeOrExclude(true)}
-                  includeOrExclude={applicableToBreaksIncludeOrExclude}
-                />
-                {applicableToBreaks?.map((_, i) => (
-                  <div key={v4()} className={"flex items-end gap-2 "}>
-                    <Controller
-                      name={`applicableToBreaks.${i}.uuid`}
-                      control={form.control}
-                      render={({ field }) => (
-                        <SelectInput
-                          key={v4()}
-                          label={
-                            "applicable To applicable To Breaks " + (1 + i)
-                          }
-                          isRequired
-                          disabled={
-                            applicableToBreaksIncludeOrExclude === undefined
-                          }
-                          onValueChange={(value) =>
-                            form.setValue(`applicableToBreaks.${i}.uuid`, value)
-                          }
-                          placeholder={
-                            "applicable To applicable To Breaks here ... "
-                          }
-                          error={
-                            form.formState.errors?.applicableToBreaks?.[i]?.uuid
-                          }
-                          options={breakOptions}
-                          {...field}
-                        />
-                      )}
+                    <ChipSelect
+                      {...field}
+                      error={
+                        form?.formState?.errors?.applicableToLocations?.message
+                      }
+                      options={locationOptions}
+                      className="rounded-none"
+                      isDisabled={
+                        applicableToLocationsIncludeOrExclude === undefined
+                      }
                     />
-                    {i > 0 ? (
-                      <Button
-                        onClick={() => {
-                          breaksRemove(i);
-                        }}
-                        size="icon"
-                        className="h-10 w-10 "
-                      >
-                        <MinusIcon className="w-4 h-4" />
-                      </Button>
-                    ) : null}
+                    <p className="text-sm text-red-600">
+                      {form?.formState?.errors?.applicableToLocations?.message}
+                    </p>
                   </div>
-                ))}
-              </div>
-              <ChipSelect options={prodOpt2} className="rounded-none" style />
+                )}
+              />
+              <Controller
+                name="applicableToBreaks"
+                control={form.control}
+                render={({ field }) => (
+                  <div className="flex flex-col">
+                    <p className="capitalize font-semibold">
+                      Applicable To Breaks
+                    </p>
+                    <ActionButtons
+                      boolean={applicableToBreaksIncludeOrExclude}
+                      setBoolean={setapplicableToBreaksIncludeOrExclude}
+                    />
+                    <ChipSelect
+                      {...field}
+                      error={
+                        form?.formState?.errors?.applicableToBreaks?.message
+                      }
+                      options={breakOptions}
+                      className="rounded-none"
+                      isDisabled={
+                        applicableToBreaksIncludeOrExclude === undefined
+                      }
+                    />
+                    <p className="text-sm text-red-600">
+                      {form?.formState?.errors?.applicableToBreaks?.message}
+                    </p>
+                  </div>
+                )}
+              />
+              <Controller
+                name="applicableToProductServices"
+                control={form.control}
+                render={({ field }) => (
+                  <div className="flex flex-col">
+                    <p className="capitalize font-semibold">
+                      Applicable To Products
+                    </p>
+                    <ActionButtons
+                      boolean={applicableToProductServicesIncludesOrExcludes}
+                      setBoolean={
+                        setapplicableToProductServicesInCludesOrExcludes
+                      }
+                    />
+                    <ChipSelect
+                      {...field}
+                      error={
+                        form?.formState?.errors?.applicableToProductServices
+                          ?.message
+                      }
+                      options={prodOptions}
+                      className="rounded-none"
+                      isDisabled={
+                        applicableToProductServicesIncludesOrExcludes ===
+                        undefined
+                      }
+                    />
+                    <p className="text-sm text-red-600">
+                      {
+                        form?.formState?.errors?.applicableToProductServices
+                          ?.message
+                      }
+                    </p>
+                  </div>
+                )}
+              />
             </div>
           </div>
           <DialogFooter>
@@ -627,48 +546,83 @@ const CreatetaxModal: React.FC<ISheet<ITaxations>> = ({
   );
 };
 
-interface ISelectActions {
-  onInclude: () => void;
-  onExclude: () => void;
-  onAppend: () => void;
-  includeOrExclude?: boolean;
+interface IActionButtons {
+  setBoolean: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  boolean?: boolean;
 }
-const SelectActions: FC<ISelectActions> = ({
-  onAppend = () => {},
-  onExclude = () => {},
-  onInclude = () => {},
-  includeOrExclude,
-}) => {
+const ActionButtons: FC<IActionButtons> = ({ setBoolean, boolean }) => {
   return (
-    <div className="flex text-xs gap-1 capitalize">
-      <div
+    <div className="flex items-center gap-3 ">
+      <button
+        type="button"
+        onClick={() => setBoolean(true)}
         className={cn(
-          "border p-1 px-2 bg-blue-100 cursor-pointer",
-          includeOrExclude === true && "bg-blue-600 text-white"
+          "flex border px-3 w-fit bg-green-100",
+          typeof boolean === "boolean" &&
+            boolean &&
+            "border-green-600 cursor-pointer  bg-green-600 text-white font-bold"
         )}
-        onClick={onInclude}
       >
-        include
-      </div>
-      <div
+        Include
+      </button>
+      <button
+        type="button"
+        onClick={() => setBoolean(false)}
         className={cn(
-          "border p-1 px-2 bg-red-100 cursor-pointer",
-          includeOrExclude === false && "bg-red-600 text-white"
+          "flex border px-3 w-fit bg-red-100",
+          typeof boolean === "boolean" &&
+            !boolean &&
+            "border-red-600 cursor-pointer bg-red-600 text-white font-bold"
         )}
-        onClick={onExclude}
       >
-        exclude
-      </div>
-      <Separator orientation="vertical" className="h-5" />
-      <div
-        className="border p-1 px-2 bg-neutral-800 text-white cursor-pointer"
-        onClick={onAppend}
-      >
-        {" "}
-        + field
-      </div>
+        Exclude
+      </button>
     </div>
   );
 };
+
+// interface ISelectActions {
+//   onInclude: () => void;
+//   onExclude: () => void;
+//   onAppend: () => void;
+//   includeOrExclude?: boolean;
+// }
+// const SelectActions: FC<ISelectActions> = ({
+//   onAppend = () => {},
+//   onExclude = () => {},
+//   onInclude = () => {},
+//   includeOrExclude,
+// }) => {
+//   return (
+//     <div className="flex text-xs gap-1 capitalize">
+//       <div
+//         className={cn(
+//           "border p-1 px-2 bg-blue-100 cursor-pointer",
+//           includeOrExclude === true && "bg-blue-600 text-white"
+//         )}
+//         onClick={onInclude}
+//       >
+//         include
+//       </div>
+//       <div
+//         className={cn(
+//           "border p-1 px-2 bg-red-100 cursor-pointer",
+//           includeOrExclude === false && "bg-red-600 text-white"
+//         )}
+//         onClick={onExclude}
+//       >
+//         exclude
+//       </div>
+//       <Separator orientation="vertical" className="h-5" />
+//       <div
+//         className="border p-1 px-2 bg-neutral-800 text-white cursor-pointer"
+//         onClick={onAppend}
+//       >
+//         {" "}
+//         + field
+//       </div>
+//     </div>
+//   );
+// };
 
 export default CreatetaxModal;
