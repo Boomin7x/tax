@@ -19,18 +19,34 @@ export const taxApi = {
   create: async (userId: string, data: ITaxationPayload) => {
     const newInputs = {
       ...data,
-      applicableToLocations: data?.applicableToLocations
-        ?.filter((items) => items?.uuid !== "")
-        ?.map((item) => item?.uuid),
-      applicableToBrackets: data?.applicableToBrackets
-        ?.filter((items) => items?.uuid !== "")
-        ?.map((item) => item?.uuid),
-      applicableToProductServices: data?.applicableToProductServices
-        ?.filter((items) => items?.uuid !== "")
-        ?.map((item) => item?.uuid),
-      applicableToBreaks: data?.applicableToBreaks
-        ?.filter((items) => items?.uuid !== "")
-        ?.map((item) => item?.uuid),
+      ...(data?.applicableToLocations?.length
+        ? {
+            applicableToLocations: data?.applicableToLocations?.map(
+              (item) => item?.value
+            ),
+          }
+        : {}),
+      ...(data?.applicableToBrackets?.length
+        ? {
+            applicableToBrackets: data?.applicableToBrackets?.map(
+              (item) => item?.value
+            ),
+          }
+        : {}),
+      ...(data?.applicableToProductServices?.length
+        ? {
+            applicableToProductServices: data?.applicableToProductServices?.map(
+              (item) => item?.value
+            ),
+          }
+        : {}),
+      ...(data?.applicableToBreaks?.length
+        ? {
+            applicableToBreaks: data?.applicableToBreaks?.map(
+              (item) => item?.value
+            ),
+          }
+        : {}),
     };
     const result = await axios.post(`/taxation/create`, newInputs, {
       params: { userId },
@@ -40,16 +56,34 @@ export const taxApi = {
   update: async (taxId: string, userId: string, data: ITaxationPayload) => {
     const newInputs = {
       ...data,
-      applicableToLocations: data?.applicableToLocations?.map(
-        (item) => item?.uuid
-      ),
-      applicableToBrackets: data?.applicableToBrackets?.map(
-        (item) => item?.uuid
-      ),
-      applicableToProductServices: data?.applicableToProductServices?.map(
-        (item) => item?.uuid
-      ),
-      applicableToBreaks: data?.applicableToBreaks?.map((item) => item?.uuid),
+      ...(data?.applicableToLocations?.length
+        ? {
+            applicableToLocations: data?.applicableToLocations?.map(
+              (item) => item?.value
+            ),
+          }
+        : {}),
+      ...(data?.applicableToBrackets?.length
+        ? {
+            applicableToBrackets: data?.applicableToBrackets?.map(
+              (item) => item?.value
+            ),
+          }
+        : {}),
+      ...(data?.applicableToProductServices?.length
+        ? {
+            applicableToProductServices: data?.applicableToProductServices?.map(
+              (item) => item?.value
+            ),
+          }
+        : {}),
+      ...(data?.applicableToBreaks?.length
+        ? {
+            applicableToBreaks: data?.applicableToBreaks?.map(
+              (item) => item?.value
+            ),
+          }
+        : {}),
     };
     const params = {
       userId,

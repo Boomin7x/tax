@@ -12,19 +12,19 @@ export const taxationSchema = yup.object().shape({
 
   applicableToLocations: yup
     .array()
-    .of(yup.object().shape({ uuid: yup.string() })),
+    .of(yup.object().shape({ value: yup.string(), label: yup.string() })),
   // .required("Applicable locations are required"),
   applicableToBrackets: yup
     .array()
-    .of(yup.object().shape({ uuid: yup.string() })),
+    .of(yup.object().shape({ value: yup.string(), label: yup.string() })),
   // .required("Applicable brackets are required"),
   applicableToBreaks: yup
     .array()
-    .of(yup.object().shape({ uuid: yup.string() })),
+    .of(yup.object().shape({ value: yup.string(), label: yup.string() })),
   // .required("Applicable breaks are required"),
   applicableToProductServices: yup
     .array()
-    .of(yup.object().shape({ uuid: yup.string() })),
+    .of(yup.object().shape({ value: yup.string(), label: yup.string() })),
   // .required("Applicable product/services are required"),
 
   validityStartDate: yup
